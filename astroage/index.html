@@ -1,0 +1,255 @@
+<!DOCTYPE html><!--HTML5 doctype-->
+<html>
+<head>
+	<title>AstroAge</title>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0" />
+	<style type="text/css">
+		/* Prevent copy paste for all elements except text fields */
+		*  { -webkit-user-select:none; -webkit-tap-highlight-color:rgba(255, 255, 255, 0); }
+		input, textarea  { -webkit-user-select:text; }
+		body { background-color:black; color:black }
+        .times {color:white;text-align:center;}
+        #input {color:white;font-size:30px;text-align:center;}
+	</style>
+	<script src='intelxdk.js'></script>
+    <script type="application/javascript" src="jquery.min.js"></script>
+    <script type="application/javascript" src="fotorama.js"></script>
+
+    <link href="fotorama.css" rel="stylesheet">
+	<meta property="og:title" content="AstroAge" />
+      <meta property="og:description" content="Calculate your age on every planet!" />
+      <!---meta property="og:url" content="https://play.google.com/store/apps/details?id=appinventor.ai_mixxav.AstroAge" /-->
+      <meta property="og:image" content="icon.png" />
+	  <link rel="stylesheet" href="pikaday.css">
+      <meta name="title" content="AstroAge" />
+      <meta name="description" content="Calculate your age on every planet!" />
+      <link rel="image_src" href="icon.png" />
+	<script type="text/javascript">
+		
+		var lang = (navigator.language || navigator.systemLanguage || navigator.userLanguage).substr(0, 2).toLowerCase();
+		
+		if (lang == 'ru') location.href="indexru.html";
+        function diet() {
+         var G=[26,0.377166157,0.905198777,1.0,0.393476045,2.44138634,1.064220183,0.903160041,1.130479103,0.165138]   ;
+         for(var i=1;i<=9;i++) {
+         var mass=document.getElementById('mass').value;
+        document.getElementById('p'+i).innerHTML='your weight is '+Math.floor(mass*G[i])+' kg';
+             
+         }
+		 $(function() {
+			$('#fotorama').fotorama();
+			
+		  });
+		  document.body.removeChild(document.getElementById('input'));
+        }
+        function calcAge() {
+            var period=[30, 87.969, 224.698, 365.2425, 686.98, 4332.589, 10759.22, 30685.4, 60190.03];//periods of planets 1st is sun
+            
+			var str=document.getElementById('datepicker').value;
+			if (str == '') {alert('Please enter valid birth date')} else { 
+            var bd=new Date(str);
+            Jbd=getJD(bd);
+            var today=new Date();
+            Jtoday=getJD(today);
+            var ageInDays=Jtoday-Jbd;
+            var age=[],bday=[],time=[];
+            if (ageInDays<0) {alert('Invalid birthdate!')} 
+			else {
+				for (i=1; i<=8; i++)	{ 
+						if (i==3) {
+                        age[i]=today.getFullYear()-bd.getFullYear();
+                        
+                        if ( bd.getMonth() > today.getMonth() ) {age[i]--;} else if ( (bd.getMonth()>today.getMonth()) && (bd.getdate()>today.getDate()) ) age[i]--;
+                            var nextbd=bd;
+                            nextbd.setFullYear(nextbd.getFullYear()+age[i]+1);
+                            bday[i]= getJD(nextbd);
+							time[i]=bday[i]-Jtoday;
+                            document.getElementById('p'+i).innerHTML='Age is '+age[i]+'<br>Next birthday<br> '+nextbd.getDate()+'.'+(nextbd.getMonth()+1)+'.'+nextbd.getFullYear()+'<br>in '+time[i]+' days';
+                        } 
+                    else {
+                        age[i]=Math.floor(ageInDays/period[i]);
+				        bday[i]=Math.floor(period[i]*(age[i]+1));
+						time[i]=bday[i]+Jbd-Jtoday;
+						document.getElementById('p'+i).innerHTML='Age is '+age[i]+'<br>Next birthday<br> '+JtoG(bday[i]+Jbd)+'<br>in '+time[i]+' days';
+                    }
+                }
+                        $(function() {
+                        $('#fotorama').fotorama();
+
+                      });
+		              //document.body.removeChild(document.getElementById('input'));
+					  document.getElementById('result').style.display = "block";
+					  document.getElementById('input').style.display = "none";
+            }
+
+            } //document.getElementById('p'+i).innerHTML='JD '+getJD(bd);
+        }
+            //function to write correct year years
+			function plural1(n) {var m=n%10, l=n%100; return n + ' ' + (((m==1)&&(l!=11))?'год':(((m==2)&&(l!=12)||(m==3)&&(l!=13)||(m==4)&&(l!=14))?'года':'лет'))}
+			function JtoG(JD) {
+                var julDate = JD;
+                var z = Math.floor(JD);
+                var f = julDate - z;
+                //alert(f);
+                if (z < 2299161) {
+                    var A = z;
+                }
+                else {
+                    var omega = Math.floor((z-1867216.25)/36524.25);
+                    var A = z + 1 + omega - Math.floor(omega/4);
+                }
+                var B = A + 1524;
+                var C = Math.floor((B-122.1)/365.25);
+                var D = Math.floor(365.25*C);
+                var Epsilon = Math.floor((B-D)/30.6001);
+                var dayGreg = B - D - Math.floor(30.6001*Epsilon) + f;
+                if (Epsilon < 14) {
+                    monthGreg = Epsilon - 1;
+                }
+                else {
+                    monthGreg = Epsilon - 13;
+                }
+                if (monthGreg > 2) {
+                    yearGreg = C - 4716;
+                }
+                else {
+                    yearGreg = C - 4715;
+                }
+                var text=dayGreg+'.'+monthGreg+'.'+yearGreg;
+                return text
+	       }
+        function getJD(date) {
+		    month = date.getMonth();
+            _month = (month * 1) + 1;
+
+            //month = 6;
+            
+            
+            day = date.getDate();
+            year = date.getFullYear();
+
+            var i,d;
+            d = 0;
+            for (i=1859; i<=year-1; i++)
+            {
+            if  ((i/4-Math.floor(i/4)) == 0 )
+             {d = Math.floor(d) + 366}
+            else 
+             {d = Math.floor(d) + 365};
+            };
+
+            for (i=1; i<=_month-1; i++)
+            { 
+            if ((i==1) || (i==3) || (i==5) || (i==7) || (i==8) || (i==10) || (i==12))
+               {d = Math.floor(d) + 31};
+            if ( (i==4) || (i==6) || (i==9) || (i==11) )
+               {d = Math.floor(d) + 30};  
+            if ( (i==2) )
+               {if  ((i/4-Math.floor(i/4)) == 0 ) 
+                {d = Math.floor(d) + 29}
+                else
+                {d = Math.floor(d) + 28};
+               };       
+            };
+            var JD = Math.floor(d) + day + 2400045;
+		 
+		 return JD
+		 }
+        function birthDateToAge(birth) {//с ней неправильно показывает след бд 1973
+         var now = new Date(),birthd=birth;
+             age = now.getFullYear() - birthd.getFullYear();
+         return now.setFullYear(1972) < birthd.setFullYear(1972) ? age - 1 : age;
+        }
+	</script>
+</head>
+<body>
+	<!-- content goes here-->
+<style type="text/css">
+	.fotorama .any {
+		text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
+		font-family: Georgia, serif;
+		font-size: 32px;
+		text-align: center;
+		height: 100%;
+		box-sizing: border-box;
+		padding-top: 100px;
+		line-height: normal;
+	}
+
+	.fotorama .inverse {
+		color: #fff;
+		text-shadow: 0 2px 2px #000;
+	}
+</style>
+    <h1 class="times"  >AstroAge</h1>
+	<hr>
+    <div id="input">
+        <div>Please enter your birthdate</div>
+		<input type="text" id="datepicker" onchange="calcAge()" placeholder="birthdate">
+        <!--input   onchange="calcAge()" type="date" id="date" placeholder="yyyy-mm-dd" > <!---value="1991-04-06">--->
+            <button onclick="calcAge()">GO!</button>
+    </div>
+	<div id="result" align="center" style="display:none">
+		<div id="fotorama"  align="center" data-loop="true" data-nav="thumbs" >
+			<div data-img="imgs/mercury.jpg" class="any inverse"><strong>Mercury</strong><div id='p1'>One</div></div>
+			<div data-img="imgs/venus.jpg" class="any inverse"><strong>Venus</strong><div id='p2'>One</div></div>
+			<div data-img="imgs/earth.jpg" class="any inverse"><strong>Earth</strong><div id='p3'>One</div></div>
+			<div data-img="imgs/mars.jpg" class="any inverse"><strong>Mars</strong><div id="p4">One</div></div>
+			<div data-img="imgs/jupiter.jpg" class="any inverse"><strong>Jupiter</strong><div id='p5'>One</div></div>
+			<div data-img="imgs/saturn.jpg" class="any inverse"><strong>Saturn</strong><div id='p6'>One</div></div>
+			<div data-img="imgs/uranus.jpg" class="any inverse"><strong>Uranus</strong><div id='p7'>One</div></div>
+			<div data-img="imgs/neptune.jpg" class="any inverse"><strong>Neptune</strong><div id='p8'>One</div></div>
+			<!---<div data-img="imgs/moon.jpg" class="any inverse"><div>Moon</div><div id='p9'>One</div></div>--->
+		</div>
+		<hr>
+		<input class="input" type="button" value="Another birthdate?" align="center" onClick="document.location.reload(true)"><br>
+			<a href="https://play.google.com/store/apps/details?id=com.mixxavgmail.com.AstroAgefree">
+			  <img alt="Android app on Google Play"
+				   src="https://developer.android.com/images/brand/en_app_rgb_wo_45.png" /><br>
+			</a>
+		<a class="times" href="http://astrutil.zz.mu/astrodiet"> Check your weight on this planet</a> 	
+		<br>
+		<div class='share-button'></div>
+	</div>
+	
+	<script src="pikaday.js"></script>
+	<script src="share.min.js"></script>
+	<script>
+	
+    var share = new Share(".share-button", {
+      
+    });
+		var picker = new Pikaday(
+		{ 
+		field: document.getElementById('datepicker'),
+		firstDay: 1,
+		minDate: new Date('1900-01-01'),
+		maxDate: new Date(),
+		yearRange: 50,
+		//onClose: calcAge()
+		//picker.toString()
+		/*i18n: {
+			previousMonth : 'Previous Month',
+			nextMonth     : 'Next Month',
+			months        : ['January','February','March','April','May','June','July','August','September','October','November','December'],
+			weekdays      : ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+			weekdaysShort : ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+		}*/
+		});
+		//picker.setMoment(moment().dayOfYear(366));
+	</script>
+	
+	<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-52337141-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+	
+</body>
+</html>

@@ -1,0 +1,175 @@
+﻿<html>
+    <head> <meta http-equiv="content-type" content="text/html;charset=utf-8"> 
+	<title>Force</title> 
+		
+    </head>
+<body>
+		<form name="form1" >
+		<h3>Движение под действием силы F = -mu/r^alpha: </h3>
+		R:<input size="5" name="rr" value="1" type="number">a.e.,
+		V:<input size="8" name="v" value="0.01728" type="number">a.e./day,
+		alpha:<input size="5" name="alp" value="2" type="number">,
+		dt:<input size="5" name="dt" value="3" type="number">day,
+		количество точек:<input size="5" name="pointmax" value="150" type="number">
+		таймаут<input size="5" name="timeout" value="1" type="number">
+		<button onclick="startp()" type="button">start</button>
+		<button onclick="stop()" type="button">STOP</button>
+		<button onclick="anim()" type="button">animation</button>
+		<!----<button onclick="clrpoint()" type="button">Убрать точки</button>---->
+		</form>
+		
+		
+		<img src="x1.jpg" id ="w2">
+		<img src="x2.jpg" id ="w3">
+<script language="JavaScript">
+	
+var x =[0,0,0,0];
+
+var point=0,pointmax,is_point=false;
+var centr=[300,300];
+var mu,alf,dt=1,tin,ten;
+function stop()  {is_on=false }
+function anim()  {
+				document.forms['form1'].rr.value=2.0;
+				document.forms['form1'].v.value=0.007;
+				document.forms['form1'].dt.value=10.0;
+				document.forms['form1'].alp.value=-8;
+				document.forms['form1'].pointmax.value=500.0;
+				startp();startp();startp();startp();startp();
+				}
+function startp() {
+	is_on=true;
+	clrpoint();
+	x[0] = 1*document.forms['form1'].rr.value;
+	x[1]=0;
+	x[2]=0;
+	x[3]=  1*document.forms["form1"].v.value;
+	dt=1*document.forms["form1"].dt.value;
+	alf=1+1*document.forms["form1"].alp.value; 
+	tin=0;
+	ten=dt;
+	centr=[300,300];
+	var img2=document.getElementById('w2');//
+			img2.setAttribute('alt', 'center of attraction');
+			img2.style.position="absolute"
+			img2.style.left=centr[0]+'px' ;
+			img2.style.top=centr[1]+'px';
+	pointmax=document.forms["form1"].pointmax.value;
+	planet();
+	} 
+function force(x)	{
+		var r,a;
+		r=Math.sqrt(x[0]*x[0]+x[1]*x[1]);
+		a=Math.pow(r,alf);//(alf>0) ? a=Math.pow(r,alf):a=1/Math.pow(r,Math.abs(alf));
+	return [ x[2],x[3],-mu*x[0]/a,-mu*x[1]/a ]
+	}
+function runge ( ti, te, x, h) {
+		var p=[0,0,0,0],q=[0,0,0,0],r=[0,0,0,0],s=[0,0,0,0],arg=[0,0,0,0];
+		var j;
+		  while(ti < te)
+			  {
+			if ( h + ti > te ) h=te-ti;
+			p=force(x);
+			for ( j=0; j<4; j++)
+					  {
+					  arg[j]=x[j]+h*p[j]/2.0;
+					  }
+			q=force ( arg );//q
+			for ( j=0; j<4; j++)
+					  {
+					  arg[j]=x[j]+h*q[j]/2.0;
+					  }
+			r=force ( arg);//r
+			for ( j=0; j<4; j++)
+					  {
+					  arg[j]=x[j]+h*r[j];
+					  }
+			s=force ( arg);//s
+			for ( j=0; j<4; j++)
+					  {
+					  x[j]+=h*(p[j]+2.0*(q[j]+r[j])+s[j])/6.0;
+					  }
+			ti+=h;
+			
+			
+			  }
+			return x
+	}
+function planet()
+		{
+		var k=0.01720209895;
+		mu=k*k;
+		
+		//var dt=1;
+			//alert(ax);
+		x=runge(tin,ten,x,0.5);
+		tin=ten;
+		ten+=dt;
+		
+			//document.body.appendChild(img2);
+		var img1=document.getElementById('w3');//рисуем планету
+			//img2.setAttribute('src', 'map.png');
+			img1.style.position="absolute"
+			img1.style.left=centr[0]+x[0]*100+'px' ;
+			img1.style.top=centr[1]-x[1]*100+'px';
+		points(x,centr);//график
+		/*var div1 = document.createElement('img');//document.getElementById('w3');
+			div1.setAttribute('src', 'x2fast.jpg');
+			div1.setAttribute('alt', 'alpha='+alf );
+			div1.style.height='2px';
+			div1.style.width ='2px';
+			div1.style.position='absolute';
+			div1.style.left=300+x[0]*100+'px';
+			div1.style.top=300-x[1]*100+'px';
+			document.body.appendChild(div1);*/
+		var rr=Math.sqrt(x[0]*x[0]+x[1]*x[1]);
+		if ((rr > 15) ) is_on=false;
+		if (( is_on )) setTimeout('planet()',document.forms["form1"].timeout.value) 
+		}
+function points (x,centr)	{//рисует график из фиксированного числа точек
+	if  (is_point)  {
+		var img1=document.getElementById(point);//
+			//img2.setAttribute('src', 'map.png');
+			img1.style.position="absolute"
+			img1.style.left=centr[0]+x[0]*100+'px' ;
+			img1.style.top=centr[1]-x[1]*100+'px';
+		} else {
+		var div1 = document.createElement('img');//document.getElementById('w3');
+			div1.setAttribute('src', 'x2fast.jpg');
+			div1.setAttribute('alt', 'alpha='+alf );
+			div1.setAttribute('id', point );
+			div1.style.height='2px';
+			div1.style.width ='2px';
+			div1.style.position='absolute';
+			div1.style.left=centr[0]+x[0]*100+'px';
+			div1.style.top=centr[1]-x[1]*100+'px';
+			document.body.appendChild(div1);
+		
+		}
+	
+	if (point==pointmax) {point=0;is_point=true;} else point++;
+	}
+function power(r,a) {
+	var i,p;
+	p=r
+	if (a>0)  {
+		for (i=0;i<a;i++) r*=p;
+		} else {
+		for (i=0;i<a;i++) r/=p;
+		}
+	return r
+	}
+function clrpoint() {//эта функция удаляет все точки предыдущего графика
+	var a;
+	if (is_point) {a=pointmax} else {a=point-1;}
+	if (a != 0) for(var i=0;i<=a;i++)	{
+	var div1=document.getElementById(i);
+	document.body.removeChild(div1)
+	}
+	is_point=false;
+	point=0;
+	}
+    </script>
+</body>
+
+</html>

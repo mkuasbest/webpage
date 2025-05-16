@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>AstroAge info</title>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+          <link rel="stylesheet" href="css/app.css">
+        <script>
+        function social_share()
+        {  
+            //Parameters:
+            //Message, Subject, File Path(relative, File URL or file://), URL, success callback, fail callback
+            window.plugins.socialsharing.share("AstroAge - find out how old are you on every planet! #AstroAge","#AstroAge free",'www/imgs/qr.jpg',"https://play.google.com/store/apps/details?id=com.mixxavgmail.com.AstroAgefree",function(result){
+                console.log('Success');
+            }, function(result){
+                console.log('fail');
+            });
+        }
+        </script>
+    </head>
+    <body>
+        <h3>Support the development</h3>
+        <div>Rate and comment</div>
+        <p><a href="https://play.google.com/store/apps/details?id=com.mixxavgmail.com.AstroAgefree">on Google Play</a></p>
+        <div><a href="javascript:social_share()">Share it!</a></div>
+        <p><a href="javascript:social_share()">tell others about this application<br> <img style="width:90%" src="imgs/qr.jpg"></a></p>
+       <hr/>
+        <h3>About AstroAge</h3><hr/>
+        <div>Version</div>
+        <p>1.1.2</p>
+        <div>Creator</div>
+        <p><a href=" https://play.google.com/store/search?q=pub:Mikhail%20Kovalev"> Mikhail Kovalev</a></p>
+        <p>many thanks to Andrew Ridden Harper for help in translation! </p>
+    </body>
+</html>

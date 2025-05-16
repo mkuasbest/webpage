@@ -1,0 +1,302 @@
+﻿<html>
+    <head> 
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+	<meta http-equiv="refresh" content="600"> 
+	<title>wourld_daylight</title> 
+	<link rel="stylesheet" type="text/css" href="style/helloworld.css">
+
+    </head>
+<body>
+<script language="Javascript">
+var s0,asol,delsol,sin_delsol,cos_delsol;
+//function gmst() {
+dothis = new Date();
+im = 1+dothis.getMonth();
+iday = dothis.getDate();
+iyear = dothis.getFullYear();
+var r = 1296000.0; 
+
+ month = new Array(31,28,31,30,31,30,31,31,30,31,30,31);
+
+
+var i;
+//integer
+var t,sm,p,e,q,d,f,m,l,pl,ps,s0,ihs,ims,sec;
+// : real;
+//{*--------------------------------------------------------------------*
+//*                        Calculate iday and t                        *
+//*--------------------------------------------------------------------*}
+
+if (im != 1) {
+//--	i = (iyear div 4)*4;
+var tmp_=Math.floor(iyear/4);
+i=Math.round(4*tmp_);
+if (iyear == i)
+    {month[1] = 29};
+//[1] - v JS s 0 numeracija massiva!
+for (i=1; i<=im-1; i++)  {iday += month[i-1]};
+};
+
+//50-ja stroka
+
+var iy = iyear - 1900;
+//--- iday = (iday-1)+(iy-1) div 4;
+iday = Math.floor((iday-1)+(iy-1)/4);
+
+//document.loc_star.test.value=iy+','+iday+"; "+l_hour+":"+l_min+":"+l_sec;
+
+
+//--t := Longint(iday) + Longint(iy)*365.0;
+t=iday + iy*365.0;
+t = (t+0.5)/36525.0;   // {   ! 00.01.1900 12h UT}
+t = t - 1;    // {   ! 01.01.2000 12h UT1}
+
+//{*--------------------------------------------------------------------*
+//*                    Calculate mean sidereal time                    *
+//*--------------------------------------------------------------------*}
+sm = 24110.548410 + 8640184.8128660*t + 0.093104*t*t- 0.00000620*t*t*t;
+while (sm <= 0) {sm = sm + 86400.0};
+while (sm > 86400) {sm = sm - 86400.0};
+//{*--------------------------------------------------------------------*
+//*             Calculate long and short periodic nutation             *
+//*--------------------------------------------------------------------*}
+//70-ja stroka
+p = Math.PI/180.0/3600.0;
+//{-------------------}
+e = p*(84381.448 - 46.8150*t - 0.00059*t*t + 0.0018130*t*t*t);
+//{-------------------}
+q = p*( 450160.280 -   5.0*r*t - 482890.539*t+ 7.455*t*t + 0.0080*t*t*t);
+d = p*(1072261.3070 + 1236.0*r*t + 1105601.328*t - 6.891*t*t+ 0.0190*t*t*t);
+f = p*( 335778.8770 + 1342.0*r*t + 295263.1370*t - 13.2570*t*t+ 0.0110*t*t*t);
+m = p*(1287099.804 +  99.0*r*t+1292581.2240*t -  0.5770*t*t - 0.0120*t*t*t);
+l = p*( 485866.7330+1325.0*r*t + 715922.633*t + 31.3100*t*t+ 0.0640*t*t*t);
+//80-ja stroka{*-------------------}
+
+pl =  -(17.19960 + 0.017420*t)*Math.sin(q);
+
+//pl=sin(q);
+pl = pl + (0.20620 + 0.000020*t)*Math.sin(2.0*q);
+pl = pl +   0.00460            *Math.sin(q+2.0*f-2.0*l);
+pl = pl +   0.00110            *Math.sin(2.0*(l-f));
+pl = pl -   0.00030            *Math.sin(2.0*(q+f-l));
+pl = pl-   0.00030            * Math.sin (l-m-d);
+pl = pl-   0.00020            * Math.sin (q-2.0*d+2.0*f-2.0*m);
+pl = pl+   0.00010            * Math.sin (q-2.0*f+2.0*l);
+pl = pl-( 1.31870+ 0.000160*t)* Math.sin (2.0*(q-d+f));
+pl = pl+(  0.14260-0.000340*t)* Math.sin (m);
+pl = pl-(  0.05170-0.000120*t)* Math.sin (2.0*q-2.0*d+2.0*f+m);
+pl = pl+(  0.02170-0.000050*t)* Math.sin (2.0*q-2.0*d+2.0*f-m);
+pl = pl+(  0.01290+0.000010*t)* Math.sin (q-2.0*d+2.0*f);
+pl = pl+   0.00480            * Math.sin (2.0*(l-d));
+pl = pl-   0.00220            * Math.sin (2.0*(f-d));
+pl = pl+(  0.00170-0.000010*t)* Math.sin (2.0*m);
+pl = pl-   0.00150            * Math.sin (q+m);
+pl = pl-(  0.00160-0.000010*t)* Math.sin (2.0*(q-d+f+m));
+pl = pl-   0.00120            * Math.sin (q-m);
+pl = pl-   0.00060            * Math.sin (q+2.0*d-2.0*l);
+pl = pl-   0.00050            * Math.sin (q-2.0*d+2.0*f-m);
+pl = pl+   0.00040            * Math.sin (q-2.0*d+2.0*l);
+pl = pl+   0.00040            * Math.sin (q-2.0*d+2.0*f+m);
+pl = pl-   0.00040            * Math.sin (l-d);
+pl = pl+   0.00010            * Math.sin (2.0*l+m-2.0*d);
+pl = pl+   0.00010            * Math.sin (q+2.0*d-2.0*f);
+pl = pl-   0.00010            * Math.sin (2.0*d-2.0*f+m);
+pl = pl+   0.00010            * Math.sin (2.0*q+m);
+pl = pl+   0.00010            * Math.sin (q+d-l);
+pl = pl-   0.00010            * Math.sin (m+2.0*f-2.0*d);
+//111-ja stroka{*------------------- }
+ps =   -(  0.22740+0.000020*t)* Math.sin (2.0*(q+f));
+ps = ps+(  0.07120+0.000010*t)* Math.sin (l);
+ps = ps-(  0.03860+0.000040*t)* Math.sin (q+2.0*f);
+ps = ps-   0.03010            * Math.sin (2.0*q+2.0*f+l);
+ps = ps-   0.01580            * Math.sin (l-2.0*d);
+ps = ps+   0.01230            * Math.sin (2.0*q+2.0*f-l);
+ps = ps+   0.00630            * Math.sin (2.0*d);
+ps = ps+(  0.00630+0.000010*t)* Math.sin (q+l);
+ps = ps-(  0.00580+0.000010*t)* Math.sin (q-l);
+ps = ps-   0.00590            * Math.sin (2.0*q+2.0*d+2.0*f-l);
+ps = ps-   0.00510            * Math.sin (q+2.0*f+l);
+ps = ps-   0.00380            * Math.sin (2.0*(q+d+f));
+ps = ps+   0.00290            * Math.sin (2.0*l);
+ps = ps+   0.00290            * Math.sin (2.0*q-2.0*d+2.0*f+l);
+ps = ps-   0.00310            * Math.sin (2.0*(q+f+l));
+ps = ps+   0.00260            * Math.sin (2.0*f);
+ps = ps+   0.00210            * Math.sin (q+2.0*f-l);
+ps = ps+   0.00160            * Math.sin (q+2.0*d-l);
+ps = ps-   0.00130            * Math.sin (q-2.0*d+l);
+ps = ps-   0.00100            * Math.sin (q+2.0*d+2.0*f-l);
+ps = ps-   0.00070            * Math.sin (l+m-2.0*d);
+ps = ps+   0.00070            * Math.sin (2.0*q+2.0*f+m);
+ps = ps-   0.00070            * Math.sin (2.0*q+2.0*f-m);
+ps = ps-   0.00080            * Math.sin (2.0*q+2.0*d+2.0*f+l);
+ps = ps+   0.00060            * Math.sin (2.0*d+l);
+ps = ps+   0.00060            * Math.sin (2.0*(q-d+f+l));
+ps = ps-   0.00060            * Math.sin (q+2.0*d);
+ps = ps-   0.00070            * Math.sin (q+2.0*d+2.0*f);
+ps = ps+   0.00060            * Math.sin (q-2.0*d+2.0*f+l);
+ps = ps-   0.00050            * Math.sin (q-2.0*d);
+ps = ps+   0.00050            * Math.sin (l-m);
+ps = ps-   0.00050            * Math.sin (q+2.0*f+2.0*l);
+ps = ps-   0.00040            * Math.sin (m-2.0*d);
+ps = ps+   0.00040            * Math.sin (l-2.0*f);
+ps = ps-   0.00040            * Math.sin (d);
+ps = ps-   0.00030            * Math.sin (l+m);
+ps = ps+   0.00030            * Math.sin (l+2.0*f);
+ps = ps-   0.00030            * Math.sin (2.0*q+2.0*f-m+l);
+ps = ps-   0.00030            * Math.sin (2.0*q+2.0*d+2.0*f-m-l);
+ps = ps-   0.00020            * Math.sin (q-2.0*l);
+ps = ps-   0.00030            * Math.sin (2.0*q+2.0*f+3.0*l);
+ps = ps-   0.00030            * Math.sin (2.0*q+2.0*d+2.0*f-m);
+ps = ps+   0.00020            * Math.sin (2.0*q+2.0*f+m+l);
+ps = ps-   0.00020            * Math.sin (q-2.0*d+2.0*f-l);
+ps = ps+   0.00020            * Math.sin (q+2.0*l);
+ps = ps-   0.00020            * Math.sin (2.0*q+l);
+ps = ps+   0.00020            * Math.sin (3.0*l);
+ps = ps+   0.00020            * Math.sin (2.0*q+d+2.0*f);
+ps = ps+   0.00010            * Math.sin (2.0*q-l);
+ps = ps-   0.00010            * Math.sin (l-4.0*d);
+ps = ps+   0.00010            * Math.sin (2.0*(q+d+f-l));
+ps = ps-   0.00020            * Math.sin (2.0*q+4.0*d+2.0*f-l);
+ps = ps-   0.00010            * Math.sin (2.0*l-4.0*d);
+ps = ps+   0.00010            * Math.sin (2.0*q-2.0*d+2.0*f+m+l);
+ps = ps-   0.00010            * Math.sin (q+2.0*d+2.0*f+l);
+ps = ps-   0.00010            * Math.sin (2.0*q+4.0*d+2.0*f-2.0*l);
+ps = ps+   0.00010            * Math.sin (2.0*q+4.0*f-l);
+ps = ps+   0.00010            * Math.sin (l-m-2.0*d);
+ps = ps+   0.00010            * Math.sin (q-2.0*d+2.0*f+2.0*l);
+ps = ps-   0.00010            * Math.sin (2.0*(q+d+f+l));
+ps = ps-   0.00010            * Math.sin (q+2.0*d+l);
+ps = ps+   0.00010            * Math.sin (2.0*q-2.0*d+4.0*f);
+ps = ps+   0.00010            * Math.sin (2.0*q-2.0*d+2.0*f+3.0*l);
+ps = ps-   0.00010            * Math.sin (l+2.0*f-2.0*d);
+ps = ps+   0.00010            * Math.sin (q+2.0*f+m);
+ps = ps+   0.00010            * Math.sin (q+2.0*d-m-l);
+ps = ps-   0.00010            * Math.sin (q-2.0*f);
+ps = ps-   0.00010            * Math.sin (2.0*q-d+2.0*f);
+ps = ps-   0.00010            * Math.sin (2.0*d+m);
+ps = ps-   0.00010            * Math.sin (l-2.0*f-2.0*d);
+ps = ps-   0.00010            * Math.sin (q+2.0*f-m);
+ps = ps-   0.00010            * Math.sin (q-2.0*d+m+l);
+ps = ps-   0.00010            * Math.sin (l-2.0*f+2.0*d);
+ps = ps+   0.00010            * Math.sin (2.0*(l+d));
+ps = ps-   0.00010            * Math.sin (2.0*q+4.0*d+2.0*f);
+ps = ps+   0.00010            * Math.sin (d+m);
+
+s0 = sm+(pl+ps)/15.0* Math.cos (e);
+
+/*var s_hour_=Math.floor(s0/3600);
+var s_min_=Math.floor((s0-s_hour_*3600)/60);
+var s_sec_=Math.floor((s0-s_hour_*3600-s_min_*60)*10000)/10000;
+*/				asol=(s0+12*3600);//coordinates of sun
+				delsol=0.4101523*Math.sin((asol*15/206265));
+				sin_delsol=Math.sin(delsol);
+				cos_delsol=Math.cos(delsol);
+//setTimeout('gmst()',86400000);
+//}
+//gmst();
+//document.write( s_hour_, " h ", s_min_," m ", s_sec_," s ");
+//var star_time = Math.PI/12*s0/3600.0;
+//v radianah
+</script>
+ 
+<script language="JavaScript">
+		function preplot(left,top) {
+			for(longitude=0;longitude<=404;longitude++) {
+			var img3=document.createElement('img');//
+				img3.setAttribute('src','images/night.png');
+				img3.setAttribute('id',longitude);
+				img3.setAttribute('title','night');
+				img3.style.position='absolute';
+				img3.style.left=left-longitude+'px';
+				img3.style.top=top+'px';
+				img3.style.width=1+'px';
+				//img3.style.height=10+'px';
+				document.body.appendChild(img3);
+				
+
+			}
+		
+		}
+		//var br=document.map.getBoundingClientRect()
+		preplot(415,140);
+		
+		function plot() {		  
+		
+//UTC time
+			var t_cur=new Date() 
+
+			var h_cur=t_cur.getUTCHours() //UTC
+
+			var m_cur=t_cur.getUTCMinutes() 
+
+			var s_cur=t_cur.getUTCSeconds() 
+			var utc=3600*h_cur+60*m_cur+s_cur;
+s=s0-utc-12*3600;//не понял почему но utc отнимать надо
+var end=s0-utc+12*3600+2;
+var longitude=0;
+//for (s;s <= end; s+=107) {
+while ( s<end) {//цикл по времени script by Kovaljov Mikhail
+var tsol=Math.cos((s-asol)*15/206265);//часовой угол солнца
+
+
+fi=Math.PI/2;
+var top=40,left=415,botom;//верхний угол картинки
+botom=top+101;
+if ( (Math.PI/2-Math.acos(Math.sin(fi)*sin_delsol+Math.cos(fi)*cos_delsol*tsol)) >= 0) {////случай лета в северном полушарии
+
+		while ( (Math.PI/2-Math.acos(Math.sin(fi)*sin_delsol+Math.cos(fi)*cos_delsol*tsol)) > 0 ) //цикл по широте
+		  {
+
+		fi-=0.01563;
+		//fi-=0.03126;
+		  }
+
+	var img4=document.getElementById(longitude);//рисуем ночь
+	//img4.setAttribute('src','images/night.png');
+	//img4.style.position='absolute';
+	//img3.style.color='blue';
+	//img4.style.left=left-longitude+'px';
+	img4.style.top=botom-63.9803*fi+'px';
+	//document.body.appendChild(img4);
+
+	img4.style.height=100+63.9803*fi+'px';
+	//img4.style.width=1+'px'//2/2+'px';
+	}
+ else {//случай лета в южном полушарии
+	var img3=document.getElementById(longitude);//рисуем ночь
+	//img3.setAttribute('src','images/night.png');
+	//img3.style.position='absolute';
+	//img3.style.color='blue';
+	//img3.style.left=left-longitude+'px';
+	img3.style.top=top+'px';
+	document.body.appendChild(img3);
+		while ( (Math.PI/2-Math.acos(Math.sin(fi)*sin_delsol+Math.cos(fi)*cos_delsol*tsol)) < 0 ) //цикл по широте
+		  {
+
+		fi-=0.01563;
+		//fi-=0.03126;
+		  }
+
+	img3.style.height=100.5-63.9803*fi+'px';
+	//img3.style.width=1+'px'//2/3+'px';
+
+	}
+	s+=214.92537//3600/33.5;
+	longitude+=1//33.5/33.5;
+}
+setTimeout('plot()',600000);
+}
+plot();
+//http://www.astronomy.ru/forum/index.php/topic,78947.0.html
+    </script>
+ <div id="container">
+      <div id="header">
+        
+        <h1>World Daylight</h1>
+      </div>
+        <img class="pict"src="images/map.png" alt="fail" title="day"/>
+      <div id="footer">Kovaljov Mikhail e-mail: mvelavok@mail.ru</div>
+    </div>
+</body>
+
+</html>

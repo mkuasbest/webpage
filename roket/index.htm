@@ -1,0 +1,89 @@
+<html>
+    <head> <meta http-equiv="content-type" content="text/html;charset=utf8"> <title>Roket</title> 
+		
+    </head>
+<body bgcolor="gray">
+		
+		<button onclick="fuel()" type="button">| fuel ></button>
+		<button onclick="p()" type="button">|=Launch=></button>
+		<button onclick="stop()" type="button">stop</button>
+		<button onclick="start()" type="button">start</button>
+		<img src="roket-s.png" id ="w1">
+		<img src="x1.jpg" id ="w2">
+		<img src="x2.jpg" id ="w3">
+<script language="JavaScript">
+	
+var x =[0,0];
+var x0=[0,0];
+var oldx=[0,0];
+var m0=2,m,dm;
+	
+	
+	
+function roket()
+			{
+			var m1,max_v=1e3;
+			fuelBar(m0,m);
+			m1=m;
+			var ax= [0,0];//new Array(2);
+			if (m1 > m0) {
+			m1=m-dm;
+			} else dm=0;
+			//ax[0]=10.0*dm/m1;
+			ax[1]=(1000.0*dm-m1*10.0)/m1;
+			m=m1;
+			var dt=1;
+			//alert(ax);
+			for(var j=0;j<2;j++) 
+							{
+							x0[j]=x[j];
+							x[j] = 2*x0[j] - oldx[j] + dt * dt * ax[j];
+							oldx[j] = x0[j];
+							}
+			//alert(x);
+			speedBar(x[1],oldx[1],max_v);
+			var div1 = document.getElementById('w1');
+			if (dm == 0) {div1.setAttribute('src', 'roket-s.png')} else {div1.setAttribute('src', 'roket-s-fire.png')}
+			div1.style.position='absolute';
+			div1.style.left=5+x[1]/0.5e3+'px';
+			div1.style.top=113+x[0]/0.5e3+'px';
+			
+
+			if ( x[1] > 0) setTimeout('roket()',30) 
+			else {
+			if (Math.abs( oldx[1]-x[1] )>max_v) {div1.setAttribute('src', 'fire.gif');alert('crashed');oldx[0]=x[0];oldx[1]=0;x[1]=0;}
+			else {oldx[0]=x[0];oldx[1]=0;x[1]=0;
+			if (dm == 0) {alert('roket landing succesfull!')} else {alert('roket too heavy to fly')}}
+				}
+			
+			}
+			function p(){x =[0,0];dm=5e-1;oldx=[0,0];m=50.0; roket()}    	
+			function stop(){  dm=0;}
+			function fuelBar(a,b) {
+									var img2=document.getElementById('w2');//
+									//img2.setAttribute('src', 'map.png');
+									img2.style.position="absolute"
+									img2.style.left=1+'px' ;
+									img2.style.top=35+'px';
+									//img2.style.color='green';
+									//document.body.appendChild(img2);
+									img2.style.height=17+'px';
+									img2.style.width=1+(b-a)*10+'px';
+								  }
+			function speedBar(a,b,c) {
+									var img2=document.getElementById('w3');//
+									if ((a-b)< -1*c) {img2.setAttribute('src', 'x2fast.jpg')} else {img2.setAttribute('src', 'x2.jpg')};
+									img2.style.position="absolute"
+									img2.style.left=1+'px' ;
+									img2.style.top=55+'px';
+									//img2.style.color='green';
+									//document.body.appendChild(img2);
+									img2.style.height=10+'px';
+									img2.style.width=1+Math.abs(b-a)*0.25+'px';
+								  }
+			function start(){ dm+=1e-1;if (x[1]<=0) roket();  }
+			function fuel(){  m+=20; fuelBar(m0,m);}
+    </script>
+</body>
+
+</html>

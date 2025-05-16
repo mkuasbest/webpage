@@ -1,0 +1,109 @@
+<html>
+    <head> <meta http-equiv="content-type" content="text/html;charset=utf-8"> <title>head</title> 
+	<script language="JavaScript">
+var clock;
+
+
+//конструктор класса Clock
+function Clock(){
+    this.months = new Array('января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря');
+    this.months_eng = new Array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+    this.dateobj = document.getElementById('date');
+    this.yearobj = document.getElementById('year');
+    this.obj = document.getElementById('clock');
+    this.interval;
+    this.delay = 60000;
+    this.day;
+    this.month;
+    this.year;
+    this.hours;
+    this.minutes;
+    this.seconds;
+
+    this.start = function(){
+        setTime();
+        this.interval = setInterval("setTime()", this.delay);
+            
+        };
+}
+
+function setTime(){
+
+    var date = new Date();
+    clock.day = date.getDate();
+    clock.month = date.getMonth();
+    clock.year = date.getFullYear();
+    clock.hours = date.getHours();
+    clock.minutes = date.getMinutes();
+    clock.seconds = date.getSeconds(); 
+    showTime();
+    //clearInterval(clock.interval);  
+}
+function showTime(){
+    var outHours = (clock.hours < 10) ? '0'+clock.hours : clock.hours;
+    var outMinutes = (clock.minutes < 10) ? '0'+clock.minutes : clock.minutes;
+    //var outSeconds = (clock.seconds < 10) ? '0'+clock.seconds : clock.seconds;
+    clock.obj.innerHTML = outHours+' : '+outMinutes;
+    clock.dateobj.innerHTML = clock.day+' '+clock.months[clock.month]+' ';
+    clock.yearobj.innerHTML = clock.year;
+}
+//showTime();
+</script>
+	
+    </head>
+<body>
+<!-- <div id="datetime">
+	<div id="clock">15 : 33</div>
+	<div id="currentdate">
+		<span id="date">21 апреля </span>
+		<span id="year">2013</span>
+	</div>
+</div> -->
+<td class="text4">Сегодня:  <b>
+            <script language="JavaScript">
+
+dothis = new Date();
+month = dothis.getMonth();
+_month = (month * 1) + 1;
+
+//month = 6;
+name_day_week = new Array("воскресенье","понедельник","вторник","среда","четверг","пятница","суббота");
+week = dothis.getDay();
+week = name_day_week[week]; 
+name_Month = new Array("января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря");
+month =name_Month[month];
+day = dothis.getDate();
+year = dothis.getFullYear();
+
+var i,d;
+d = 0;
+for (i=1995; i<=year-1; i++)
+{
+if  ((i/4-Math.floor(i/4)) == 0 )
+ {d = Math.floor(d) + 366}
+else 
+ {d = Math.floor(d) + 365};
+};
+
+for (i=1; i<=_month-1; i++)
+{ 
+if ((i==1) || (i==3) || (i==5) || (i==7) || (i==8) || (i==10) || (i==12))
+   {d = Math.floor(d) + 31};
+if ( (i==4) || (i==6) || (i==9) || (i==11) )
+   {d = Math.floor(d) + 30};  
+if ( (i==2) )
+   {if  ((i/4-Math.floor(i/4)) == 0 ) 
+    {d = Math.floor(d) + 29}
+    else
+    {d = Math.floor(d) + 28};
+   };       
+};
+var J_day = Math.floor(d) + day + 2449717.5;
+
+document.write(week, ", ",day," ",month," ",year," г. </b><br>Юлианская дата на сегодня: <b>",J_day);
+Clock();
+</script></b>
+
+</body>
+
+</html>

@@ -1,0 +1,52 @@
+/** Basic styles **/
+
+body {
+  font-family: Verdana, Helvetica, sans-serif;
+  font-size: 16px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.1em;
+  padding: 7px 0 0 10px;
+  font-weight: normal;
+}
+
+h2{
+    font-weight: normal;
+    font-size: 1.1em;
+    margin: 0px;
+}
+
+/** Structure **/
+
+#container {
+  width: 417px;
+}
+
+#header {
+  background-image: url(../images/back_top.png);
+  padding: 0px 10px 0px 10px;
+  height: 30px;
+}
+
+#content {
+  background-image: url(../images/back_center.png);
+  color: #�0�0c0;
+}
+.pict { 
+ margin-left: 3px;
+ border: 2px outset #4d4d4d;
+ width: 403px; 
+ height: 203px;
+ display:block
+} 
+
+#footer {
+  background-image: url(../images/back_bottom.png);
+  height: 23px;
+  padding: 2px 0 0 20px;
+  font-size: 0.6em;
+  text-decoration: underline;
+  color: #dd2222;
+}

@@ -1,0 +1,169 @@
+<html>
+    <head> 
+		<meta http-equiv="content-type" content="text/html;charset=utf-8"> 
+		<title>Орбита геосинхронного спутника</title> 
+		
+    </head>
+
+
+	<body bgcolor='gray'>
+		
+		<form name="forma">
+			<h3>Орбита геосинхронного спутника</h3>
+			
+			эксцентриситет:<input size="5" name="e" value="0.01" type="number">
+			наклон<input size="4" name="inc" value="56" type="number">°
+			омега<input size="4" name="omega" value="0" type="number">°
+			ОМЕГА<input size="4" name="OMEGA" value="0" type="number">°
+			M0<input size="4" name="M0" value="0" type="number">°
+			период<input size="4" name="period" value="24" type="number">ч
+			
+			<input value="ввод->" onclick="vvod()" type="button">
+			<button onclick="p()" type="button">|></button>
+			<button onclick="q()" type="button">||</button>
+			<img src="x1.jpg" id ="w2">
+			
+		</form>
+		<img src="map.png" name="map" >
+		<script language="JavaScript">
+			var A=[0,0],BB=[0,0],n,sd,e,M_PI=3.141592653589793;
+			var s=0,po,a,is_on=true;
+			var point=0,pointmax=180,is_point=false,period;
+			function vvod() {
+			//for geosinhr
+			
+			var omega,OMEGA=0.,inc;
+			var P=[0,0],qq=[0,0],b,t,mu=398601.3,i;
+			n=2.*M_PI/86400.;
+			sd=2.*M_PI/3600/document.forms["forma"].period.value;
+			omega=document.forms["forma"].omega.value/57.2957795;
+			e=document.forms["forma"].e.value*1;
+			inc=document.forms["forma"].inc.value/57.2957795;
+			OMEGA=document.forms["forma"].OMEGA.value/57.2957795;
+			a=Math.pow( mu/sd/sd , 1/3 );
+			b=a*Math.sqrt(1-e*e);
+			//векторные элементы
+			P[0]=Math.cos(omega)*Math.cos(OMEGA)-Math.sin(omega)*Math.sin(OMEGA)*Math.cos(inc);
+			P[1]=Math.cos(omega)*Math.sin(OMEGA)+Math.sin(omega)*Math.cos(OMEGA)*Math.cos(inc);;
+			P[2]=Math.sin(omega)*Math.sin(inc);
+			qq[0]=-Math.sin(omega)*Math.cos(OMEGA)-Math.cos(omega)*Math.sin(OMEGA)*Math.cos(inc);
+			qq[1]=-Math.sin(omega)*Math.sin(OMEGA)+Math.cos(omega)*Math.cos(OMEGA)*Math.cos(inc);
+			qq[2]=Math.cos(omega)*Math.sin(inc);
+			
+			
+			for(i=0;i<3;i++) {
+					
+					A[i]=a*P[i];
+					BB[i]=b*qq[i];
+					
+				}
+			s=0;
+			period=3600*(document.forms["forma"].period.value);
+			geosinhronsputnik(s);//alert(s);
+			//for(s=3600*(0-document.forms["forma"].period.value);s<=3600*(0+document.forms["forma"].period.value);s+=24*document.forms["forma"].period.value) geosinhronsputnik(s);
+			}
+
+			function geosinhronsputnik(t)	{
+				var M0,E0,icw,isw,posd,alf,del,yk,y0,eps=1e-10;
+				//M0=0;
+				s+=20*document.forms["forma"].period.value;
+				M0=document.forms["forma"].M0.value/57.2957795+sd*(t);
+				y0=0;
+						yk=M0;
+						while ( Math.abs(y0 - yk) > eps){
+									y0 = yk;
+									yk=e*Math.sin(y0)+M0;
+								}
+								E0=yk;//printf("E0 %lf\n", E0);
+				isw=(A[0]*(Math.cos(E0)-e)+BB[0]*Math.sin(E0));
+				icw=(A[1]*(Math.cos(E0)-e)+BB[1]*Math.sin(E0));
+				posd=(A[2]*(Math.cos(E0)-e)+BB[2]*Math.sin(E0));
+				
+				alf=Math.atan2( icw, isw );
+				isw/=Math.cos(alf);
+				del=Math.atan2( posd, isw );
+				po=isw/Math.cos(del);
+				
+				
+				
+				var br=document.map.getBoundingClientRect()
+				//alert(br.left+0.5*document.map.width);
+				
+				heightBar(a,po);//высота спутника
+				
+				while (t >= 86400) t-=86400;
+				alf-=n*(t);
+				if (alf>=M_PI) alf-=2*M_PI;
+				if (alf<=-M_PI) alf+=2*M_PI;
+				if ( (alf*57.2957795>=-180.) && (alf*57.2957795<=180.) ){
+				var div1=document.getElementById('w2');//рисуем сам спутник
+				div1.setAttribute('src', 'roket-s-fire.png');
+				//div1.setAttribute('id', 'sputnik')
+				//document.body.appendChild(div1); 
+				div1.style.height='10px';
+				div1.style.width ='20px';
+				//div1.style.backgroundColor='gold';
+				div1.style.position='absolute';
+				div1.style.left=(br.left+0.5*document.map.width)+alf*127.9606+'px';
+				div1.style.top=(br.top+0.5*document.map.height)-127.9606*del+'px';
+				//easter
+				if (document.forms["forma"].M0.value==119) if (Math.abs(alf+1.6)<10/57) if (Math.abs(del-0.75)<10/57) {is_on=false;div1.setAttribute('src', 'fire.gif')}
+				points ();
+				} else {alert(t)}
+				if (is_on) setTimeout('geosinhronsputnik(s)',100);
+			}
+			
+			function q(){is_on = false
+					} 
+			function p(){is_on = true; geosinhronsputnik(s)}  
+			
+			function heightBar(aa,bb) {
+									var img2=document.getElementById('height');//
+									//img2.setAttribute('src', 'map.png');
+									//img2.style.position="absolute"
+									//img2.style.left=1+'px' ;
+									//img2.style.top=550+'px';
+									//alert(bb);
+									//img2.style.color='green';
+									//document.body.appendChild(img2);
+									//img2.style.height=17+'px';
+									img2.style.width=1+(bb/aa)*500+'px';
+									
+									//var oText = document.createTextNode(Math.round(bb));
+									img2.innerHTML=Math.round(bb)-6400+' км';
+									//img2.replaceChild(oText);
+									//document.body.appendChild(oDiv);
+									//document.getElementById('height').write(bb);
+								  }
+			function points ()	{
+				var div10=document.getElementById('w2');
+				if  (is_point)  {
+					var img1=document.getElementById(point);//
+						//img2.setAttribute('src', 'map.png');
+						img1.style.position="absolute"
+						img1.style.left=div10.style.left ;
+						img1.style.top=div10.style.top;
+					} else {
+					var div2=document.createElement('div');
+					div2.setAttribute('id',point);
+					div2.style.height='2px';
+					div2.style.width ='2px';
+					div2.style.backgroundColor='gold';
+					div2.style.position='absolute';
+					div2.style.left=div10.style.left;
+					div2.style.top=div10.style.top;
+					  document.body.appendChild(div2);
+			
+					}	
+	
+			if (point==pointmax) {point=0;is_point=true;} else point++;
+			}
+		</script>
+		<h3>относительное изменение высоты спутника</h3>
+		<div style="height: 20px; width: 60px; background-color: yellow;  position: absolute;" id="height" >
+			
+			height	
+				
+		</div>
+	</body>
+</html>

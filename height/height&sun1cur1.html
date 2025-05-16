@@ -1,0 +1,363 @@
+<html>
+    <head> <meta http-equiv="content-type" content="text/html;charset=utf-8"> <title>Высота</title> 
+
+    </head>
+<body>
+<td class="text4">Сегодня:  <b>
+            <script language="JavaScript">
+
+dothis = new Date();
+month = dothis.getMonth();
+_month = (month * 1) + 1;
+
+//month = 6;
+name_day_week = new Array("воскресенье","понедельник","вторник","среда","четверг","пятница","суббота");
+week = dothis.getDay();
+week = name_day_week[week]; 
+name_Month = new Array("января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря");
+month =name_Month[month];
+day = dothis.getDate();
+year = dothis.getFullYear();
+
+var i,d;
+d = 0;
+for (i=1995; i<=year-1; i++)
+{
+if  ((i/4-Math.floor(i/4)) == 0 )
+ {d = Math.floor(d) + 366}
+else 
+ {d = Math.floor(d) + 365};
+};
+
+for (i=1; i<=_month-1; i++)
+{ 
+if ((i==1) || (i==3) || (i==5) || (i==7) || (i==8) || (i==10) || (i==12))
+   {d = Math.floor(d) + 31};
+if ( (i==4) || (i==6) || (i==9) || (i==11) )
+   {d = Math.floor(d) + 30};  
+if ( (i==2) )
+   {if  ((i/4-Math.floor(i/4)) == 0 ) 
+    {d = Math.floor(d) + 29}
+    else
+    {d = Math.floor(d) + 28};
+   };       
+};
+var J_day = Math.floor(d) + day + 2449717.5;
+
+document.write(week, ", ",day," ",month," ",year," г. </b><br>Юлианская дата на сегодня: <b>",J_day);
+</script></b>
+            <br>
+            Истинное звездное время на текущую дату в Гринвичскую полночь:<b> 
+            <script language="javascript">
+
+dothis = new Date();
+im = 1+dothis.getMonth();
+iday = dothis.getDate();
+iyear = dothis.getFullYear();
+var r = 1296000.0; 
+
+ month = new Array(31,28,31,30,31,30,31,31,30,31,30,31);
+
+
+var i;
+//integer
+var t,sm,p,e,q,d,f,m,l,pl,ps,s0,ihs,ims,sec;
+// : real;
+//{*--------------------------------------------------------------------*
+//*                        Calculate iday and t                        *
+//*--------------------------------------------------------------------*}
+
+if (im != 1) {
+//--	i = (iyear div 4)*4;
+var tmp_=Math.floor(iyear/4);
+i=Math.round(4*tmp_);
+if (iyear == i)
+    {month[1] = 29};
+//[1] - v JS s 0 numeracija massiva!
+for (i=1; i<=im-1; i++)  {iday += month[i-1]};
+};
+
+//50-ja stroka
+
+var iy = iyear - 1900;
+//--- iday = (iday-1)+(iy-1) div 4;
+iday = Math.floor((iday-1)+(iy-1)/4);
+
+//document.loc_star.test.value=iy+','+iday+"; "+l_hour+":"+l_min+":"+l_sec;
+
+
+//--t := Longint(iday) + Longint(iy)*365.0;
+t=iday + iy*365.0;
+t = (t+0.5)/36525.0;   // {   ! 00.01.1900 12h UT}
+t = t - 1;    // {   ! 01.01.2000 12h UT1}
+
+//{*--------------------------------------------------------------------*
+//*                    Calculate mean sidereal time                    *
+//*--------------------------------------------------------------------*}
+sm = 24110.548410 + 8640184.8128660*t + 0.093104*t*t- 0.00000620*t*t*t;
+while (sm <= 0) {sm = sm + 86400.0};
+while (sm > 86400) {sm = sm - 86400.0};
+//{*--------------------------------------------------------------------*
+//*             Calculate long and short periodic nutation             *
+//*--------------------------------------------------------------------*}
+//70-ja stroka
+p = Math.PI/180.0/3600.0;
+//{-------------------}
+e = p*(84381.448 - 46.8150*t - 0.00059*t*t + 0.0018130*t*t*t);
+//{-------------------}
+q = p*( 450160.280 -   5.0*r*t - 482890.539*t+ 7.455*t*t + 0.0080*t*t*t);
+d = p*(1072261.3070 + 1236.0*r*t + 1105601.328*t - 6.891*t*t+ 0.0190*t*t*t);
+f = p*( 335778.8770 + 1342.0*r*t + 295263.1370*t - 13.2570*t*t+ 0.0110*t*t*t);
+m = p*(1287099.804 +  99.0*r*t+1292581.2240*t -  0.5770*t*t - 0.0120*t*t*t);
+l = p*( 485866.7330+1325.0*r*t + 715922.633*t + 31.3100*t*t+ 0.0640*t*t*t);
+//80-ja stroka{*-------------------}
+
+pl =  -(17.19960 + 0.017420*t)*Math.sin(q);
+
+//pl=sin(q);
+pl = pl + (0.20620 + 0.000020*t)*Math.sin(2.0*q);
+pl = pl +   0.00460            *Math.sin(q+2.0*f-2.0*l);
+pl = pl +   0.00110            *Math.sin(2.0*(l-f));
+pl = pl -   0.00030            *Math.sin(2.0*(q+f-l));
+pl = pl-   0.00030            * Math.sin (l-m-d);
+pl = pl-   0.00020            * Math.sin (q-2.0*d+2.0*f-2.0*m);
+pl = pl+   0.00010            * Math.sin (q-2.0*f+2.0*l);
+pl = pl-( 1.31870+ 0.000160*t)* Math.sin (2.0*(q-d+f));
+pl = pl+(  0.14260-0.000340*t)* Math.sin (m);
+pl = pl-(  0.05170-0.000120*t)* Math.sin (2.0*q-2.0*d+2.0*f+m);
+pl = pl+(  0.02170-0.000050*t)* Math.sin (2.0*q-2.0*d+2.0*f-m);
+pl = pl+(  0.01290+0.000010*t)* Math.sin (q-2.0*d+2.0*f);
+pl = pl+   0.00480            * Math.sin (2.0*(l-d));
+pl = pl-   0.00220            * Math.sin (2.0*(f-d));
+pl = pl+(  0.00170-0.000010*t)* Math.sin (2.0*m);
+pl = pl-   0.00150            * Math.sin (q+m);
+pl = pl-(  0.00160-0.000010*t)* Math.sin (2.0*(q-d+f+m));
+pl = pl-   0.00120            * Math.sin (q-m);
+pl = pl-   0.00060            * Math.sin (q+2.0*d-2.0*l);
+pl = pl-   0.00050            * Math.sin (q-2.0*d+2.0*f-m);
+pl = pl+   0.00040            * Math.sin (q-2.0*d+2.0*l);
+pl = pl+   0.00040            * Math.sin (q-2.0*d+2.0*f+m);
+pl = pl-   0.00040            * Math.sin (l-d);
+pl = pl+   0.00010            * Math.sin (2.0*l+m-2.0*d);
+pl = pl+   0.00010            * Math.sin (q+2.0*d-2.0*f);
+pl = pl-   0.00010            * Math.sin (2.0*d-2.0*f+m);
+pl = pl+   0.00010            * Math.sin (2.0*q+m);
+pl = pl+   0.00010            * Math.sin (q+d-l);
+pl = pl-   0.00010            * Math.sin (m+2.0*f-2.0*d);
+//111-ja stroka{*------------------- }
+ps =   -(  0.22740+0.000020*t)* Math.sin (2.0*(q+f));
+ps = ps+(  0.07120+0.000010*t)* Math.sin (l);
+ps = ps-(  0.03860+0.000040*t)* Math.sin (q+2.0*f);
+ps = ps-   0.03010            * Math.sin (2.0*q+2.0*f+l);
+ps = ps-   0.01580            * Math.sin (l-2.0*d);
+ps = ps+   0.01230            * Math.sin (2.0*q+2.0*f-l);
+ps = ps+   0.00630            * Math.sin (2.0*d);
+ps = ps+(  0.00630+0.000010*t)* Math.sin (q+l);
+ps = ps-(  0.00580+0.000010*t)* Math.sin (q-l);
+ps = ps-   0.00590            * Math.sin (2.0*q+2.0*d+2.0*f-l);
+ps = ps-   0.00510            * Math.sin (q+2.0*f+l);
+ps = ps-   0.00380            * Math.sin (2.0*(q+d+f));
+ps = ps+   0.00290            * Math.sin (2.0*l);
+ps = ps+   0.00290            * Math.sin (2.0*q-2.0*d+2.0*f+l);
+ps = ps-   0.00310            * Math.sin (2.0*(q+f+l));
+ps = ps+   0.00260            * Math.sin (2.0*f);
+ps = ps+   0.00210            * Math.sin (q+2.0*f-l);
+ps = ps+   0.00160            * Math.sin (q+2.0*d-l);
+ps = ps-   0.00130            * Math.sin (q-2.0*d+l);
+ps = ps-   0.00100            * Math.sin (q+2.0*d+2.0*f-l);
+ps = ps-   0.00070            * Math.sin (l+m-2.0*d);
+ps = ps+   0.00070            * Math.sin (2.0*q+2.0*f+m);
+ps = ps-   0.00070            * Math.sin (2.0*q+2.0*f-m);
+ps = ps-   0.00080            * Math.sin (2.0*q+2.0*d+2.0*f+l);
+ps = ps+   0.00060            * Math.sin (2.0*d+l);
+ps = ps+   0.00060            * Math.sin (2.0*(q-d+f+l));
+ps = ps-   0.00060            * Math.sin (q+2.0*d);
+ps = ps-   0.00070            * Math.sin (q+2.0*d+2.0*f);
+ps = ps+   0.00060            * Math.sin (q-2.0*d+2.0*f+l);
+ps = ps-   0.00050            * Math.sin (q-2.0*d);
+ps = ps+   0.00050            * Math.sin (l-m);
+ps = ps-   0.00050            * Math.sin (q+2.0*f+2.0*l);
+ps = ps-   0.00040            * Math.sin (m-2.0*d);
+ps = ps+   0.00040            * Math.sin (l-2.0*f);
+ps = ps-   0.00040            * Math.sin (d);
+ps = ps-   0.00030            * Math.sin (l+m);
+ps = ps+   0.00030            * Math.sin (l+2.0*f);
+ps = ps-   0.00030            * Math.sin (2.0*q+2.0*f-m+l);
+ps = ps-   0.00030            * Math.sin (2.0*q+2.0*d+2.0*f-m-l);
+ps = ps-   0.00020            * Math.sin (q-2.0*l);
+ps = ps-   0.00030            * Math.sin (2.0*q+2.0*f+3.0*l);
+ps = ps-   0.00030            * Math.sin (2.0*q+2.0*d+2.0*f-m);
+ps = ps+   0.00020            * Math.sin (2.0*q+2.0*f+m+l);
+ps = ps-   0.00020            * Math.sin (q-2.0*d+2.0*f-l);
+ps = ps+   0.00020            * Math.sin (q+2.0*l);
+ps = ps-   0.00020            * Math.sin (2.0*q+l);
+ps = ps+   0.00020            * Math.sin (3.0*l);
+ps = ps+   0.00020            * Math.sin (2.0*q+d+2.0*f);
+ps = ps+   0.00010            * Math.sin (2.0*q-l);
+ps = ps-   0.00010            * Math.sin (l-4.0*d);
+ps = ps+   0.00010            * Math.sin (2.0*(q+d+f-l));
+ps = ps-   0.00020            * Math.sin (2.0*q+4.0*d+2.0*f-l);
+ps = ps-   0.00010            * Math.sin (2.0*l-4.0*d);
+ps = ps+   0.00010            * Math.sin (2.0*q-2.0*d+2.0*f+m+l);
+ps = ps-   0.00010            * Math.sin (q+2.0*d+2.0*f+l);
+ps = ps-   0.00010            * Math.sin (2.0*q+4.0*d+2.0*f-2.0*l);
+ps = ps+   0.00010            * Math.sin (2.0*q+4.0*f-l);
+ps = ps+   0.00010            * Math.sin (l-m-2.0*d);
+ps = ps+   0.00010            * Math.sin (q-2.0*d+2.0*f+2.0*l);
+ps = ps-   0.00010            * Math.sin (2.0*(q+d+f+l));
+ps = ps-   0.00010            * Math.sin (q+2.0*d+l);
+ps = ps+   0.00010            * Math.sin (2.0*q-2.0*d+4.0*f);
+ps = ps+   0.00010            * Math.sin (2.0*q-2.0*d+2.0*f+3.0*l);
+ps = ps-   0.00010            * Math.sin (l+2.0*f-2.0*d);
+ps = ps+   0.00010            * Math.sin (q+2.0*f+m);
+ps = ps+   0.00010            * Math.sin (q+2.0*d-m-l);
+ps = ps-   0.00010            * Math.sin (q-2.0*f);
+ps = ps-   0.00010            * Math.sin (2.0*q-d+2.0*f);
+ps = ps-   0.00010            * Math.sin (2.0*d+m);
+ps = ps-   0.00010            * Math.sin (l-2.0*f-2.0*d);
+ps = ps-   0.00010            * Math.sin (q+2.0*f-m);
+ps = ps-   0.00010            * Math.sin (q-2.0*d+m+l);
+ps = ps-   0.00010            * Math.sin (l-2.0*f+2.0*d);
+ps = ps+   0.00010            * Math.sin (2.0*(l+d));
+ps = ps-   0.00010            * Math.sin (2.0*q+4.0*d+2.0*f);
+ps = ps+   0.00010            * Math.sin (d+m);
+
+var s0 = sm+(pl+ps)/15.0* Math.cos (e);
+var asol=(s0+12*3600);
+var delsol=0.4101523*Math.sin((asol*15/206265));
+var s_hour_=Math.floor(s0/3600);
+var s_min_=Math.floor((s0-s_hour_*3600)/60);
+var s_sec_=Math.floor((s0-s_hour_*3600-s_min_*60)*10000)/10000;
+document.write( s_hour_, " h ", s_min_," m ", s_sec_," s ");
+//var star_time = Math.PI/12*s0/3600.0;
+//v radianah
+</script>
+</b>
+
+ <div id="container">
+ <h3> Graph height of star</h3>
+<img src="x1.png" alt="fail" name="table"/> 
+<script>
+var hsol,h;
+var br=document.table.getBoundingClientRect();
+function preplot(left,top) {
+			for(var n1=0;n1<432;n1++) {
+			var img1=document.createElement('img');
+			var img2=document.createElement('img');
+			var img3=document.createElement('img');//
+				//img3.setAttribute('src','x4.png');
+				img3.setAttribute('id',n1);
+				img1.setAttribute('id','star'+n1);
+				img2.setAttribute('id','sun'+n1);
+				//var time=Math.floor(n1/18)+"h "+(n1%18)*3+"m";
+				//img3.setAttribute('title',time);
+				img1.setAttribute('src','star.png');
+				img1.style.position='absolute';
+				img2.setAttribute('src','sun.png');
+				img2.style.position='absolute';
+				img3.style.position='absolute';
+				img3.style.left=left+n1+'px';
+				img3.style.top=top+'px';
+				img1.style.left=left+n1+'px';
+				img1.style.top=top+'px';
+				img2.style.left=left+n1+'px';
+				img2.style.top=top+2+'px';
+				//img3.style.width=1+'px';
+				//img3.style.height=10+'px';
+				document.body.appendChild(img3);
+				document.body.appendChild(img1);
+				document.body.appendChild(img2);
+				
+
+			}
+		
+		}
+preplot(br.left+49,br.top+18);
+var ut=-14400;
+var t=0;
+var dt=200; var n=435,n1,dn=2,dn1=1; var is_on = false;
+var gmst,t1,muut1=0,alf=67035.4,lambda=9031.2,delta=0.6770901510193198,fi=0.9567982934;
+function plot() {
+//current time
+			var t_cur=new Date() 
+
+			var h_cur=t_cur.getHours() 
+
+			var m_cur=t_cur.getMinutes() 
+
+			var s_cur=t_cur.getSeconds() 
+			var cur=3600*h_cur+60*m_cur+ut;
+
+				for(n1=0;n1<432;n1++)
+				{
+				
+		        ut=ut+dt*dn1;
+                gmst=s0+ut+muut1;
+                s=gmst+lambda;
+				var t1=(s-alf)*15/206265;
+				var tsol=(s-asol)*15/206265;
+				h=(-100*(Math.PI/2-1*Math.acos(Math.sin(fi)*Math.sin(delta)+Math.cos(fi)*Math.cos(delta)*Math.cos(t1))));
+				hsol=(-100*(Math.PI/2-1*Math.acos(Math.sin(fi)*Math.sin(delsol)+Math.cos(fi)*Math.cos(delsol)*Math.cos(tsol))));
+				var time=Math.floor(n1/18)+"h "+Math.floor((n1%18)*3.3333334)+"m";
+                var img=document.getElementById(n1);
+				var img1=document.getElementById('star'+n1);
+				var img2=document.getElementById('sun'+n1);
+				if ((hsol>1) && (hsol<21)) {img.setAttribute('src', 'x5.png');img.setAttribute('title',time+' twinlight');};//show twinlight PATISON MUST DIE!! vampires sucks!!!
+				if (hsol<=1) {img.setAttribute('src', 'x6.png');img.setAttribute('title',time+' day');};//show day
+				if (hsol>=21) {img.setAttribute('src', 'x4.png');img.setAttribute('title',time+' night');};//show night
+				if ((ut%3600)==0) img.setAttribute('src', 'x7.png');//show hours
+				if (Math.abs(ut - cur)<200) {img.setAttribute('src', 'xcurrent.png');img.setAttribute('alt', 'Tekuschee vremya');} //current time
+
+				var hgrad=-Math.floor(h*0.5729)+"°, ";
+				var time=hgrad + Math.floor(n1/18)+"h "+Math.floor((n1%18)*3.3333334)+"m";
+				img1.setAttribute('title','star '+time);
+				hgrad=-Math.floor(hsol*0.5729)+"°, ";
+				time=hgrad + Math.floor(n1/18)+"h "+Math.floor((n1%18)*3.3333334)+"m";
+				img2.setAttribute('title','sun '+time);
+				
+				//img2.style.left=66+n+'px';
+				img2.style.top=(hsol+br.top+174)+'px';
+				//img1.style.left=66+n+'px';
+				img1.style.top=(br.top+174+h)+'px';
+				
+
+}
+}
+plot();
+</script>
+<form name="forml">
+<div id="bbod">
+Географическая долгота места:<input size="1"  name="long_1" value="37" type="number">° <input size="1"  name="long_2" value="37" type="number">'<input size="1"  name="long_3" value="48" type="number">"<br>
+Географическая широта места:<input size="1"  name="lat_1" value="54" type="number">° <input size="1"  name="lat_2" value="49" type="number">' <input  size="1" name="lat_3" value="14" type="number">"<br>
+Прямое восхождение : <input size="1"  name="a1" type="number" value="18">h <input size="1"  name="a2" type="number" value="37">m <input size="1"  name="a3" type="number"value="15.4">s<br>
+Склонение: <input  size="1" name="d1" type="number" value="38">° <input size="1"  name="d2" type="number"value="47">' <input size="1"  name="d3" type="number" value="40">"<br>
+местное время-UT = <input  size="1" name="UT1" value="4">часа<br>
+<input value="ввод->" onclick="vvod(forml)" type="button">
+</div>
+</form>
+ </div>
+
+<script language="javascript">
+            
+	function vvod(obj){
+		var a1=1*obj.a1.value,a2=1*obj.a2.value,a3=1*obj.a3.value;
+		alf=(a1*3600+a2*60+a3);
+		//alert(alf);
+		var d1=1*obj.d1.value,d2=1*obj.d2.value,d3=1*obj.d3.value;
+		delta=(d1*3600+d2*60+d3)/206265;
+		//alert(delta);
+		var lt=1*obj.UT1.value;
+		ut=-3600*lt;
+		var lat_1=1*obj.lat_1.value,lat_2=1*obj.lat_2.value,lat_3=1*obj.lat_3.value;
+		fi=(lat_1*3600+lat_2*60+lat_3)/206265;
+		//alert(fi);
+		var long_1=1*obj.long_1.value,long_2=1*obj.long_2.value,long_3=1*obj.long_3.value;
+		lambda=(long_1*3600+long_2*60+long_3)/15;
+		plot();
+		//step()
+		 }
+           
+    </script>
+</body>
+
+</html>
