@@ -1,169 +1,343 @@
-<html>
-    <head> 
-		<meta http-equiv="content-type" content="text/html;charset=utf-8"> 
-		<title>Орбита геосинхронного спутника</title> 
+
+<!-- saved from url=(0045)https://nlte.mpia.de/upload/astrutil/sputnik/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> 
+		 
+		<title>Ground track from orbit</title> 
 		
     </head>
 
 
-	<body bgcolor='gray'>
-		
-		<form name="forma">
-			<h3>Орбита геосинхронного спутника</h3>
-			
-			эксцентриситет:<input size="5" name="e" value="0.01" type="number">
-			наклон<input size="4" name="inc" value="56" type="number">°
-			омега<input size="4" name="omega" value="0" type="number">°
-			ОМЕГА<input size="4" name="OMEGA" value="0" type="number">°
-			M0<input size="4" name="M0" value="0" type="number">°
-			период<input size="4" name="period" value="24" type="number">ч
-			
-			<input value="ввод->" onclick="vvod()" type="button">
-			<button onclick="p()" type="button">|></button>
-			<button onclick="q()" type="button">||</button>
-			<img src="x1.jpg" id ="w2">
-			
-		</form>
-		<img src="map.png" name="map" >
-		<script language="JavaScript">
-			var A=[0,0],BB=[0,0],n,sd,e,M_PI=3.141592653589793;
-			var s=0,po,a,is_on=true;
-			var point=0,pointmax=180,is_point=false,period;
-			function vvod() {
-			//for geosinhr
-			
-			var omega,OMEGA=0.,inc;
-			var P=[0,0],qq=[0,0],b,t,mu=398601.3,i;
-			n=2.*M_PI/86400.;
-			sd=2.*M_PI/3600/document.forms["forma"].period.value;
-			omega=document.forms["forma"].omega.value/57.2957795;
-			e=document.forms["forma"].e.value*1;
-			inc=document.forms["forma"].inc.value/57.2957795;
-			OMEGA=document.forms["forma"].OMEGA.value/57.2957795;
-			a=Math.pow( mu/sd/sd , 1/3 );
-			b=a*Math.sqrt(1-e*e);
-			//векторные элементы
-			P[0]=Math.cos(omega)*Math.cos(OMEGA)-Math.sin(omega)*Math.sin(OMEGA)*Math.cos(inc);
-			P[1]=Math.cos(omega)*Math.sin(OMEGA)+Math.sin(omega)*Math.cos(OMEGA)*Math.cos(inc);;
-			P[2]=Math.sin(omega)*Math.sin(inc);
-			qq[0]=-Math.sin(omega)*Math.cos(OMEGA)-Math.cos(omega)*Math.sin(OMEGA)*Math.cos(inc);
-			qq[1]=-Math.sin(omega)*Math.sin(OMEGA)+Math.cos(omega)*Math.cos(OMEGA)*Math.cos(inc);
-			qq[2]=Math.cos(omega)*Math.sin(inc);
-			
-			
-			for(i=0;i<3;i++) {
-					
-					A[i]=a*P[i];
-					BB[i]=b*qq[i];
-					
-				}
-			s=0;
-			period=3600*(document.forms["forma"].period.value);
-			geosinhronsputnik(s);//alert(s);
-			//for(s=3600*(0-document.forms["forma"].period.value);s<=3600*(0+document.forms["forma"].period.value);s+=24*document.forms["forma"].period.value) geosinhronsputnik(s);
-			}
+	<body bgcolor="gray">
 
-			function geosinhronsputnik(t)	{
-				var M0,E0,icw,isw,posd,alf,del,yk,y0,eps=1e-10;
-				//M0=0;
-				s+=20*document.forms["forma"].period.value;
-				M0=document.forms["forma"].M0.value/57.2957795+sd*(t);
-				y0=0;
-						yk=M0;
-						while ( Math.abs(y0 - yk) > eps){
-									y0 = yk;
-									yk=e*Math.sin(y0)+M0;
-								}
-								E0=yk;//printf("E0 %lf\n", E0);
-				isw=(A[0]*(Math.cos(E0)-e)+BB[0]*Math.sin(E0));
-				icw=(A[1]*(Math.cos(E0)-e)+BB[1]*Math.sin(E0));
-				posd=(A[2]*(Math.cos(E0)-e)+BB[2]*Math.sin(E0));
-				
-				alf=Math.atan2( icw, isw );
-				isw/=Math.cos(alf);
-				del=Math.atan2( posd, isw );
-				po=isw/Math.cos(del);
-				
-				
-				
-				var br=document.map.getBoundingClientRect()
-				//alert(br.left+0.5*document.map.width);
-				
-				heightBar(a,po);//высота спутника
-				
-				while (t >= 86400) t-=86400;
-				alf-=n*(t);
-				if (alf>=M_PI) alf-=2*M_PI;
-				if (alf<=-M_PI) alf+=2*M_PI;
-				if ( (alf*57.2957795>=-180.) && (alf*57.2957795<=180.) ){
-				var div1=document.getElementById('w2');//рисуем сам спутник
-				div1.setAttribute('src', 'roket-s-fire.png');
-				//div1.setAttribute('id', 'sputnik')
-				//document.body.appendChild(div1); 
-				div1.style.height='10px';
-				div1.style.width ='20px';
-				//div1.style.backgroundColor='gold';
-				div1.style.position='absolute';
-				div1.style.left=(br.left+0.5*document.map.width)+alf*127.9606+'px';
-				div1.style.top=(br.top+0.5*document.map.height)-127.9606*del+'px';
-				//easter
-				if (document.forms["forma"].M0.value==119) if (Math.abs(alf+1.6)<10/57) if (Math.abs(del-0.75)<10/57) {is_on=false;div1.setAttribute('src', 'fire.gif')}
-				points ();
-				} else {alert(t)}
-				if (is_on) setTimeout('geosinhronsputnik(s)',100);
-			}
+		<form name="forma" style="position: fixed;  width: 900px;  height: 600px;">
+			<h3>Орбита геосинхронного спутника </h3>
+			<div style="display: inline-block;">
+			<label for="e">e:</label><input size="6" name="e" value="0.01">
+			<label for="inc">  i:</label><input size="6" name="inc" value="56">°
+
+			omega:<input size="6" name="omega" value="0">°
+			Omega:<input size="6" name="OMEGA" value="0">°
 			
-			function q(){is_on = false
-					} 
-			function p(){is_on = true; geosinhronsputnik(s)}  
+			M0:<input size="6" name="M0" value="0">°
+			P:<input size="6" name="period" value="23.934">ч
 			
-			function heightBar(aa,bb) {
-									var img2=document.getElementById('height');//
-									//img2.setAttribute('src', 'map.png');
-									//img2.style.position="absolute"
-									//img2.style.left=1+'px' ;
-									//img2.style.top=550+'px';
-									//alert(bb);
-									//img2.style.color='green';
-									//document.body.appendChild(img2);
-									//img2.style.height=17+'px';
-									img2.style.width=1+(bb/aa)*500+'px';
-									
-									//var oText = document.createTextNode(Math.round(bb));
-									img2.innerHTML=Math.round(bb)-6400+' км';
-									//img2.replaceChild(oText);
-									//document.body.appendChild(oDiv);
-									//document.getElementById('height').write(bb);
-								  }
-			function points ()	{
-				var div10=document.getElementById('w2');
-				if  (is_point)  {
-					var img1=document.getElementById(point);//
-						//img2.setAttribute('src', 'map.png');
-						img1.style.position="absolute"
-						img1.style.left=div10.style.left ;
-						img1.style.top=div10.style.top;
-					} else {
-					var div2=document.createElement('div');
-					div2.setAttribute('id',point);
-					div2.style.height='2px';
-					div2.style.width ='2px';
-					div2.style.backgroundColor='gold';
-					div2.style.position='absolute';
-					div2.style.left=div10.style.left;
-					div2.style.top=div10.style.top;
-					  document.body.appendChild(div2);
+			<input value="ввод-&gt;" onclick="vvod()" type="button">
+			<button onclick="p()" type="button">|&gt;</button>
+			<button onclick="q()" type="button">||</button>
+			</div>
 			
-					}	
-	
-			if (point==pointmax) {point=0;is_point=true;} else point++;
-			}
-		</script>
-		<h3>относительное изменение высоты спутника</h3>
-		<div style="height: 20px; width: 60px; background-color: yellow;  position: absolute;" id="height" >
-			
+			<div style="display: inline-block;">
+			<textarea style="width: 583px; height: 40px;" maxlength="140" cols="69" placeholder="Two line elements example" name="tle" required="required">1 25544U 98067A   20051.61662857  .00016717  00000-0  10270-3 0  9017
+2 25544  51.6408 210.1989 0004948 292.7020  67.3618 15.49198742 13783
+</textarea> TLE input
+		<input value="read-&gt;" onclick="readtle()" type="button">
+		</div><br>
+		
+		<img src="./Ground track from orbit_files/map.png" name="map" style="position: absolute;width: 900px;  height: 450px;">
+		
+		</form>
+		
+		<!--h3>относительное изменение высоты спутника</h3-->
+		<div style="bottom:0px; height: 20px; width: 60px; background-color: yellow;  position: absolute;" id="height">
 			height	
-				
 		</div>
-	</body>
-</html>
+		<img src="./Ground track from orbit_files/x2.jpg" id="w2" style="position: absolute;">
+<script language="JavaScript">
+	var A=[0,0],BB=[0,0],n,sd,sday,sdot=0,sdotdot=0,e,M_PI=3.141592653589793;
+	var epoch=0;
+	var epochd= new Date();
+	var sutki=86164;//sidericheskie sutki v sekundah
+	var dlaunchyear=dlaunchnom=depochyear=null;
+	var s=s0=0.0,po,a,is_on=true;
+	var point=0,pointmax=180,is_point=false,period;
+	var today=new Date();
+	//alert(today.toUTCString()); 
+	depochyear=today.getUTCFullYear();
+	var ep=today;
+	//alert(ep.toUTCString());
+	s0=getJD(ep);//+epoch*1;
+	var ep=new Date(Date.UTC(depochyear,0,1,0,0,0,0));
+	//alert(ep.toUTCString()); 
+	s1=getJD(ep);
+	//alert(s0);
+	epoch=s0-s1;
+	//alert(epoch);
+	
+function vvod() {
+	//for geosinhr
+	var omega,OMEGA=0.,inc;
+	var P=[0,0],qq=[0,0],b,t,mu=398601.3,i;
+	n=2.*M_PI/sutki;//86400.;
+	sd=2.*M_PI/3600/document.forms["forma"].period.value;//srednee dvizhenie
+	omega=document.forms["forma"].omega.value/57.2957795;
+	e=document.forms["forma"].e.value*1;
+	inc=document.forms["forma"].inc.value/57.2957795;
+	OMEGA=document.forms["forma"].OMEGA.value/57.2957795;
+	a=Math.pow( mu/sd/sd , 1/3 );//major semiaxis from IIId Kepler's law
+	b=a*Math.sqrt(1-e*e);//minor semiaxis
+	//векторные элементы
+	P[0]=Math.cos(omega)*Math.cos(OMEGA)-Math.sin(omega)*Math.sin(OMEGA)*Math.cos(inc);
+	P[1]=Math.cos(omega)*Math.sin(OMEGA)+Math.sin(omega)*Math.cos(OMEGA)*Math.cos(inc);;
+	P[2]=Math.sin(omega)*Math.sin(inc);
+	qq[0]=-Math.sin(omega)*Math.cos(OMEGA)-Math.cos(omega)*Math.sin(OMEGA)*Math.cos(inc);
+	qq[1]=-Math.sin(omega)*Math.sin(OMEGA)+Math.cos(omega)*Math.cos(OMEGA)*Math.cos(inc);
+	qq[2]=Math.cos(omega)*Math.sin(inc);
+	
+	
+	for(i=0;i<3;i++) {
+			
+			A[i]=a*P[i];
+			BB[i]=b*qq[i];
+			
+		}
+	var today = new Date();
+	s=getJD(today);
+	//alert(today.toUTCString()+"now JD "+s);
+	
+	
+	var ep=new Date(Date.UTC(depochyear,0,1,0,0,0,0));
+	//alert(ep.toUTCString()); 
+	s0=getJD(ep)+epoch;
+	//alert(ep.toUTCString()+" epoch JD "+s0);
+	//alert(s-s0);
+	s=(s-s0)*86400;
+	
+	period=3600*(document.forms["forma"].period.value);
+	geosinhronsputnik(s);//alert(s);
+	//for(s=3600*(0-document.forms["forma"].period.value);s<=3600*(0+document.forms["forma"].period.value);s+=24*document.forms["forma"].period.value) geosinhronsputnik(s);
+	}
+
+	function geosinhronsputnik(t)	{
+		var M0,E0,M,icw,isw,posd,alf,del,yk,y0,eps=1e-10;
+		//M0=0;
+		s+=20*document.forms["forma"].period.value;
+		M0=document.forms["forma"].M0.value/57.2957795
+		M=M0+sd*t;
+		
+		y0=0;
+		
+		yk=M;//решаем уравнение Кеплера методом итераций
+		while ( Math.abs(y0 - yk) > eps){
+					y0 = yk;
+					yk=e*Math.sin(y0)+M;
+				}
+				E0=yk;//printf("E0 %lf\n", E0);
+		isw=(A[0]*(Math.cos(E0)-e)+BB[0]*Math.sin(E0));
+		icw=(A[1]*(Math.cos(E0)-e)+BB[1]*Math.sin(E0));
+		posd=(A[2]*(Math.cos(E0)-e)+BB[2]*Math.sin(E0));
+		
+		alf=Math.atan2( icw, isw );
+		isw/=Math.cos(alf);
+		del=Math.atan2( posd, isw );
+		po=isw/Math.cos(del);
+		
+		
+		
+		var br=document.map.getBoundingClientRect()
+		//alert(br.left+0.5*document.map.width);
+		
+		heightBar(a,po,t/3600);//высота спутника
+		
+		//while (t >= 86400) t-=86400;
+		var tt=t%sutki;
+		//rotation of the earth
+		alf-=n*tt;
+		if (alf>=M_PI) alf-=2*M_PI;
+		if (alf<=-M_PI) alf+=2*M_PI;
+		//alf=alf%(2*M_PI);
+		//if ( (alf*57.2957795>=-180.) && (alf*57.2957795<=180.) ){
+		if ( (alf>=-M_PI) && (alf<=M_PI) ){
+		var div1=document.getElementById('w2');//рисуем сам спутник
+		//div1.setAttribute('src', 'roket-s-fire.png');
+		//div1.setAttribute('id', 'sputnik')
+		//document.body.appendChild(div1); 
+		div1.style.height='10px';
+		div1.style.width ='10px';
+		div1.style.backgroundColor='gold';
+		//div1.style.position='absolute';
+		div1.style.left=(br.left+0.5*document.map.width)+alf*document.map.width/2.0/M_PI+'px';//alf*127.9606
+		div1.style.top=(br.top+0.5*document.map.height)-del*document.map.height/M_PI+'px';//-127.9606*del
+		//easter
+		if (document.forms["forma"].M0.value==119) if (Math.abs(alf+1.6)<10/57) if (Math.abs(del-0.75)<10/57) {is_on=false;div1.setAttribute('src', 'fire.gif')}
+		points ();
+		}// else {alert(t)}
+		if (is_on) setTimeout('geosinhronsputnik(s)',100);
+	}
+	
+	function q(){is_on = false
+			} 
+	function p(){is_on = true; geosinhronsputnik(s)}  
+	
+	function heightBar(aa,bb,tt) {
+		var img2=document.getElementById('height');//
+		//img2.setAttribute('src', 'map.png');
+		//img2.style.position="absolute"
+		//img2.style.left=1+'px' ;
+		//img2.style.top=550+'px';
+		//alert(bb);
+		//img2.style.color='green';
+		//document.body.appendChild(img2);
+		//img2.style.height=17+'px';
+		img2.style.width=1+(bb/aa)*500+'px';
+		
+		//var oText = document.createTextNode(Math.round(bb));
+		var text_time="";
+		if (tt>24) {text_time=text_time+Math.round(tt/24)+" days "+Math.round((tt%24)*100)/100+" hrs";}
+		else {text_time=Math.round((tt%24)*100)/100+" hrs";}
+		img2.innerHTML=Math.round(bb)-6400+' км; '+text_time;//Math.round(tt*100)/100+" hrs";
+		//img2.replaceChild(oText);
+		//document.body.appendChild(oDiv);
+		//document.getElementById('height').write(bb);
+	  }
+	function points ()	{
+		var div10=document.getElementById('w2');
+		if  (is_point)  {
+			var img1=document.getElementById(point);//
+				//img2.setAttribute('src', 'map.png');
+				//img1.style.position="sticky"
+				img1.style.left=div10.style.left ;
+				img1.style.top=div10.style.top;
+			} else {
+			var div2=document.createElement('div');
+			div2.setAttribute('id',point);
+			div2.style.height='2px';
+			div2.style.width ='2px';
+			div2.style.backgroundColor='gold';
+			div2.style.position='absolute';//'absolute';
+			div2.style.left=div10.style.left;
+			div2.style.top=div10.style.top;
+			document.body.appendChild(div2);
+	
+			}	
+
+	if (point==pointmax) {point=0;is_point=true;} else point++;
+	}
+	function JtoG(JD) {//julian date JD to grigorian 
+		var julDate = JD;
+		var z = Math.floor(JD);
+		var f = julDate - z;
+		//alert(f);
+		if (z < 2299161) {
+			var A = z;
+		}
+		else {
+			var omega = Math.floor((z-1867216.25)/36524.25);
+			var A = z + 1 + omega - Math.floor(omega/4);
+		}
+		var B = A + 1524;
+		var C = Math.floor((B-122.1)/365.25);
+		var D = Math.floor(365.25*C);
+		var Epsilon = Math.floor((B-D)/30.6001);
+		var dayGreg = B - D - Math.floor(30.6001*Epsilon) + f;
+		if (Epsilon < 14) {
+			monthGreg = Epsilon - 1;
+		}
+		else {
+			monthGreg = Epsilon - 13;
+		}
+		if (monthGreg > 2) {
+			yearGreg = C - 4716;
+		}
+		else {
+			yearGreg = C - 4715;
+		}
+		var text=dayGreg+'.'+monthGreg+'.'+yearGreg;
+		return text
+   }
+function getJD(date) {
+	
+	var JD = date.getTime()/86400000;
+ 
+ return JD
+ }
+	
+	function readtle() {
+	  //var str = "Hello world, welcome to the universe.";
+	  //var n = str.indexOf("o");
+	  var tle=document.forms["forma"].tle.value;
+	  //alert(tle.length);
+	  if (tle.length>138) 
+	  {
+	  tle=tle.substr(0, 139);
+	  var epoch_a=tle.substr(18, 2);
+	  var epoch_d=tle.substr(20, 12);
+	  //alert(epoch_a);
+	  //alert(epoch_d);
+	  //alert(tle.indexOf("\n"));
+	  var strs=tle.split("\n");
+	  //https://soltau.ru/index.php/themes/prilozheniya/item/532-analizator-tle-two-line-element-i-elementov-orbit-isz
+	  // 1st string:
+		var tlestring1 = strs[0];//new String(tlestr1);
+		var satnom = tlestring1.substr(2,5);
+		var classif = tlestring1.charAt(7);
+		var launchyear = tlestring1.substr(9,2);
+		var launchnom = tlestring1.substr(11,3);
+		var pieceoflaunch = tlestring1.substr(14,3);
+		var epochyear = tlestring1.substr(18,2);
+			epoch = tlestring1.substr(20,12)-1.;
+			//alert(epoch);
+		var fsttimederiv = tlestring1.substr(33,10);
+		var scndtimederiv = tlestring1.substr(44,8);
+		var BSTAR = tlestring1.substr(53,8);
+		var ephemeristype = tlestring1.charAt(62);
+		var elemnom = tlestring1.substr(64,4);
+		var chksum1 = tlestring1.charAt(68);
+
+		sdot=fsttimederiv*1;
+		sdotdot=scndtimederiv*1;
+
+		// расшифровка 1 строки:
+		if (launchyear - 0 > 56) {
+		dlaunchyear = '19' + launchyear;
+		}
+		else {
+		dlaunchyear = '20' + launchyear;
+		}
+		dlaunchnom = launchnom - 0;
+		if (epochyear - 0 > 56) {
+		depochyear = '19' + epochyear;
+		}
+		else {
+		depochyear = '20' + epochyear;
+		}
+
+
+	  var elems=strs[1].split(/(\s+)/).filter( e => e.trim().length > 0);///\s{2,}/ https://stackoverflow.com/questions/26425637/javascript-split-string-with-white-space
+	  //alert(elems);
+	  var inc=elems[2];
+	  var Omega=elems[3];
+	  var ecc="0."+elems[4];
+	  var omeg=elems[5];
+	  var mnull=elems[6];
+	  //should be smaller than 24 (real period is ~4 min smaller)
+	  sday=elems[7]*1;
+	  var amo=24/elems[7];
+	  //alert(ecc*1);
+	  document.forms["forma"].e.value=ecc*1;
+	  document.forms["forma"].period.value=amo*1;
+	  document.forms["forma"].M0.value=mnull*1;
+	  document.forms["forma"].inc.value=inc*1;
+	  document.forms["forma"].omega.value=omeg*1;
+	  document.forms["forma"].OMEGA.value=Omega*1;
+	  } else {alert("input is not in TLE format (2 lines of 69 chars!)");}
+	  //document.getElementById("demo").innerHTML = n;
+	}
+	
+	// ВЫЧИСЛЕНИЕ ДАТЫ И ВРЕМЕНИ ПО ЭПОХЕ:
+	function countepoch(numberofday) {
+	epochd = new Date();
+	var millisec = ((depochyear-1970) * 365.25) + (numberofday - 0) * 8.64e7; // мсек от 1.01.1970 до времени эпохи;
+	//alert(millisec);
+	epochd= new Date(millisec);//.setTime(millisec);
+	//alert(epochd);
+	month = epochd.getUTCMonth() + 1;
+	date = epochd.getUTCDate() - 1;
+	depoch = date + '.' + month + '.' + depochyear + ', ' + epochd.getUTCHours() + ':' + epochd.getUTCMinutes() + ':' + epochd.getUTCSeconds() + '.' + epochd.getUTCMilliseconds();
+	//alert(depoch);
+	return depoch;
+	}
+
+</script>
+
+	
+</body></html>
