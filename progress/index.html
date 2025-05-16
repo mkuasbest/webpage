@@ -1,0 +1,137 @@
+﻿<html>
+    <head> <meta http-equiv="content-type" content="text/html;charset=utf-8"> 
+	<title>Roket</title> 
+		
+    </head>
+<body bgcolor=00137f>
+		
+		<button onclick="fuel()" type="button">| fuёl ></button>
+		<button onclick="p1()" type="button">|=Launch=></button>
+		<button onclick="stop()" type="button">stop</button>
+		<!-- <button onclick="up()" type="button">^</button>
+		<button onclick="down()" type="button">v</button>
+		<button onclick="right()" type="button">></button>
+		<button onclick="left()" type="button"> < </button> -->
+		
+		<img src="x1.jpg" name ="progres">
+		
+<script language="JavaScript">
+	
+var x =[0,0];
+var x0=[0,0];
+var oldx=[0,0];
+var m0=20,m,dm=[0,0];
+var station=[0,0];	
+var is_on=true;	
+	
+function roket()
+			{
+			var m1,max_v=1e3;
+			heightBar(m0,m);
+			m1=m;
+			var ax= [0,0];//new Array(2);
+			if (m1 > m0) {
+			m1=m-(Math.abs(dm[0])+Math.abs(dm[1]));
+			} else {dm[0]=0;dm[1]=0}
+			ax[0]=1.0*dm[0]/m1;
+			ax[1]=1.0*dm[1]/m1;
+			m=m1;
+			var dt=1;
+			//alert(ax);
+			for(var j=0;j<2;j++) 
+							{
+							x0[j]=x[j];
+							x[j] = 2*x0[j] - oldx[j] + dt * dt * ax[j];
+							oldx[j] = x0[j];
+							}
+			//alert(x);
+			//speedBar(x[1],oldx[1],max_v);
+			if ((dm[0]==0) && (dm[1]==0))  document.progres.setAttribute('src', 'progres.png')
+			document.progres.style.position='absolute';
+			document.progres.style.left=x[1]+'px';
+			document.progres.style.top=x[0]+'px';
+			
+
+			if (( x[0] < 30) || ( x[0] > 500)) x[0]=oldx[0]
+			if (( x[1] < 30) || ( x[1] > 700)) x[1]=oldx[1]
+			//тут горизонтальная координата х это x[1]
+			if ( (Math.abs(x[1]+71-station[1])<2) && (Math.abs(x[0]+45-station[0])<2)) {is_on=false; alert('стыковка Successful!! You win!')};
+			
+			if ( ((x[1]+69)>station[1]) && (Math.abs(x[0]+45-station[0])<160)) {is_on=false; document.progres.setAttribute('src', 'progresani.gif'); alert('столкновение GAME OVER - You lose!');};
+			
+			if (is_on) setTimeout('roket()',30) 
+			/*else {
+			if (Math.abs( oldx[1]-x[1] )>max_v) {document.progres.setAttribute('src', 'fire.gif');alert('crashed');oldx[0]=x[0];oldx[1]=0;x[1]=0;}
+			else {oldx[0]=x[0];oldx[1]=0;x[1]=0;
+			if (dm[1] == 0) {alert('roket landing succesfull!')} else {alert('roket too heavy to fly')}}
+				}*/
+			
+			}
+function p1() {//initialisation
+			x =[150,260];
+			oldx=[150,260];
+			document.progres.setAttribute('src', 'progres.png');
+			m=60.0;
+			br=document.mir.getBoundingClientRect();
+			station[1]=br.left+68;//координаты стыковочного узла
+			station[0]=br.top+161;
+			//alert(station);
+			is_on=true;
+			roket();}    	
+			function stop(){  dm[0]=0;dm[1]=0;document.progres.setAttribute('src', 'progres.png')}
+			function heightBar(aa,bb) {
+									var img2=document.getElementById('height');//
+									
+									img2.style.width=1+(bb-aa)+'px';
+									img2.innerHTML=Math.round(bb)+' кг';
+								  }
+			function fuelBar(a,b) {
+									var img2=document.getElementById('w2');//
+									//img2.setAttribute('src', 'map.png');
+									img2.style.position="absolute"
+									img2.style.left=1+'px' ;
+									img2.style.top=35+'px';
+									//img2.style.color='green';
+									//document.body.appendChild(img2);
+									img2.style.height=17+'px';
+									img2.style.width=1+(b-a)*10+'px';
+								  }
+			function speedBar(a,b,c) {
+									var img2=document.getElementById('w3');//
+									if ((a-b)< -1*c) {img2.setAttribute('src', 'x2fast.jpg')} else {img2.setAttribute('src', 'x2.jpg')};
+									img2.style.position="absolute"
+									img2.style.left=1+'px' ;
+									img2.style.top=55+'px';
+									//img2.style.color='green';
+									//document.body.appendChild(img2);
+									img2.style.height=10+'px';
+									img2.style.width=1+Math.abs(b-a)*0.25+'px';
+								  }
+			//function start(){ dm[1]+=1e-1;if (x[1]<=0) roket();  }
+			function down(){ dm[0]+=1e-1;document.progres.setAttribute('src', 'progres-down.png')}
+			function up(){ dm[0]-=1e-1;document.progres.setAttribute('src', 'progres-up.png')}
+			function right(){ dm[1]+=1.5e-1;document.progres.setAttribute('src', 'progres-right.png')}
+			function left(){ dm[1]-=1.5e-1;document.progres.setAttribute('src', 'progres-left.png')}
+			function fuel(){  m+=20; heightBar(m0,m);}
+    </script>
+	<div style="height: 20px; width: 60px; background-color: yellow;  position: absolute;" id="height" >
+			
+			топливо	
+				
+		</div>
+		
+		<img name="mir" src="MIR1.png" style=" position: absolute; left: 300px; top: 1px;"/>
+<img src="arrows.png" width="120" height="120" alt="Навигация по сайту"
+       usemap="#Navigation" style=" position: absolute; left: 10px; top: 100px;">
+  <p><map name="Navigation">
+  <area shape="rect" coords="40,1,79,40" href="javascript:up()" alt="UP">
+  <area shape="rect" coords="1,40,40,80" href="javascript:left()" alt="LEFT">
+  <area shape="rect" coords="80,41,119,80" href="javascript:right()" alt="right">
+  <area shape="rect" coords="41,81,80,119" href="javascript:down()" alt="down">
+  <area shape="rect" coords="42,42,78,78" href="javascript:stop()" alt="Stop">
+  
+  </map></p>
+		
+</body>
+
+</html>
