@@ -1,0 +1,63 @@
+/** Basic styles **/
+
+body {
+  font-family: Verdana, Helvetica, sans-serif;
+  font-size: 16px;
+}
+
+h1 {
+  margin: 0px;
+  font-size: 1.1em;
+  padding: 7px 0 0 10px;
+  font-weight: normal;
+}
+
+h2{
+    font-weight: normal;
+    font-size: 1.1em;
+    margin: 0px;
+}
+
+/** Structure **/
+
+#container {
+  width: 385px;
+ 
+}
+
+#header {
+  background-image: url(../images/back_top.png);
+  padding: 0px 10px 0px 10px;
+  height: 30px;
+}
+
+#level {
+  margin-left: 3px;
+  background-color: #c0c0c0;
+  
+  padding: 0px 10px 0px 10px;
+  height: 28px;
+}
+#main {
+  margin-left: 3px;
+  background-color: #c0c0c0;
+  padding: 0px 0px 0px 0px;
+
+}
+.pict { 
+ margin-left: 0px;
+ border: 1px outset #4d4d4d;
+ width: 380px; 
+ height: 560px;
+ display:block
+ 
+} 
+
+#footer {
+  background-image: url(../images/back_bottom.png);
+  height: 23px;
+  padding: 0 10px 0 10px;
+  font-size: 0.6em;
+  text-decoration: underline;
+  color: #dd2222;
+}

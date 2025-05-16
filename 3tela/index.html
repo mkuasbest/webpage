@@ -1,0 +1,214 @@
+<html>
+	<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+		<title>задача трех тел</title>
+<!-- 		<meta http-equiv=" Content-type" content="text/html;charset=utf8"> -->
+	</head>
+	<BODY BACKGROUND="fon.png" BGCOLOR="silver" text="blue">
+		 <h1>Численное интегрирование задачи 3-х тел методом верле</h1><!--Р--> 
+
+		<form name="forml"> 
+		<h3>Ввод координат и скоростей</h3>
+
+		первое тело (серое-красное)<img src="body1.png" id ="w1">: масса: <input size="4" name="numl" value="2e27" type="text"> скорость Х:<input size="4" name="num12" value="0" type="text"> скорость У:<input size="4" name="num13" value="4e2" type="text"> положение Х:<input size="4" name="num6" value="0" type="text"> положение У:<input size="4" name="num7" value="0" type="text"><hr> 
+
+		второе тело (черное-синее)<img src="body2.png" id ="w2">  : масса: <input size="4" name="num2" value="2e27" type="text"> скорость Х:<input size="4" name="num14" value="0" type="text"> скорость У:<input size="4" name="num15" value="-4e2" type="text"> положение Х:<input size="4" name="num8" value="3e11" type="text"> положение У:<input size="4" name="num9" value="0" type="text"><hr>
+
+		третье тело (желтое-зеленое):<img src="body3.png" id ="w3"> масса: <input size="4" name="num3" value="2e27" type="text"> скорость Х:<input size="4" name="num16" value="1e2" type="text"> скорость У:<input size="4" name="num17" value="5e2" type="text"> положение Х:<input size="4" name="num10" value="1.5e11" type="text"> положение У:<input size="4" name="num11" value="-24e11" type="text"><hr>
+
+		dt:<input size="4" name="num5" value="1e7" type="text"> tmax:<input size="4" name="tmax" value="1000e7" type="text">G<input size="6" name="G" value="6.67e-11" type="text"> <input value="ввод" onclick="vvod(forml)" type="button"><input type="reset" value=Обновить>
+
+		</form>
+		
+		
+		
+		<script language="javascript">
+			
+			var x=[200e10, 200e10, 230e10, 200e10, 215e10, -40e10, 
+					    0,   -4e2,      0,    4e2,    1e1, 0.44e3];
+			var m = [2e27, 2e27, 2e27 ];
+			//var G=6.67e-11;
+			var dt = 600e4;
+			var is_on = true;
+			var oldx=[0,0,0,0,0,0,0,0,0,0,0,0];
+			var  x0=[0,0,0,0,0,0,0,0,0,0,0,0];
+			var  mx=[0,0,0,0,0,0,0,0,0,0,0,0];
+			function vvod(obj)
+				{
+				var m1 = [1*obj.numl.value, 1*obj.num2.value, 1*obj.num3.value];
+				m=m1;
+				is_on = true;
+				mx=[1*obj.num6.value+2e12,1*obj.num7.value+1.5e12,1*obj.num8.value+2e12,1*obj.num9.value+1.5e12,1*obj.num10.value+2e12,1*obj.num11.value+1.5e12,1*obj.num12.value,1*obj.num13.value,1*obj.num14.value,1*obj.num15.value,1*obj.num16.value,1*obj.num17.value ];
+				//x=mx+[200e10, 200e10, 200e10, 200e10, 200e10, 200e10, 0,0,0,0,0,0];
+				x=mx;
+				//alert( mx.join(', '));
+				var dt2=1*obj.num5.value;
+				dt=dt2;
+				tmax=1*obj.tmax.value;
+				G=1*obj.G.value;
+				var dx = R(x, m, G);
+				for(var j=0;j<12;j++) oldx[j] = x[j] - dt * dx[j];
+				
+				verle();
+				
+				//if (is_on) setTimeout('vvod()',1)
+				}
+			var q1,q2,q3,q4,q5,q6;
+			//var is_on = true;
+			function eiler()
+				{ 
+				for(t=0;t<tmax;t+=dt)
+					{
+					var div1=document.createElement('div');
+					var div2=document.createElement('div');
+					var div3=document.createElement('div');
+					document.body.appendChild(div1); 
+					document.body.appendChild(div2); 
+					document.body.appendChild(div3); 
+					div1.style.height='1px';
+					div1.style.width ='1px';
+					div1.style.backgroundColor='red';
+					div1.style.position='absolute';
+					div2.style.height='1px';
+					div2.style.width ='1px';
+					div2.style.backgroundColor='blue';
+					div2.style.position='absolute';
+					div3.style.height='1px';
+					div3.style.width ='1px';
+					div3.style.backgroundColor='green';
+					div3.style.position='absolute';
+					
+					q1=x[0]/1e10;
+					q2=x[1]/1e10;
+					q3=x[2]/1e10;
+					q4=x[3]/1e10;
+					q5=x[4]/1e10;
+					q6=x[5]/1e10;
+					var dx = R(x, m, G);
+					for(var j=0;j<12;j++) x[j] = x[j] + dt * dx[j];
+					div1.style.left=q1+250+'px';
+					div1.style.top=q2+250+'px';
+					div2.style.left=q3+250+'px';
+					div2.style.top=q4+250+'px';
+					div3.style.left=q5+250+'px';
+					div3.style.top=q6+250+'px';
+			//if(is_on) setTimeout('eiler()',1)
+					}
+				}
+			function verle()
+				{ 
+				//for(t=0;t<tmax;t+=dt)
+					//{
+						/*var div1=document.createElement('div');
+						var div2=document.createElement('div');
+						var div3=document.createElement('div');
+						//document.body.appendChild(div1); 
+						//document.body.appendChild(div2); 
+						//document.body.appendChild(div3); 
+						div1.style.height='2px';
+						div1.style.width ='2px';
+						div1.style.backgroundColor='brown';
+						div1.style.position='absolute';
+
+						div2.style.height='2px';
+						div2.style.width ='2px';
+						div2.style.backgroundColor='black';
+						div2.style.position='absolute';
+
+						div3.style.height='2px';
+						div3.style.width ='2px';
+						div3.style.backgroundColor='orange';
+						div3.style.position='absolute';
+						*/
+						var div1 = document.getElementById('w1');
+						div1.style.position='absolute';
+						var div2 = document.getElementById('w2');
+						div2.style.position='absolute';
+						var div3 = document.getElementById('w3');
+						div3.style.position='absolute';
+						q1=x[0]/1e10;
+						q2=x[1]/1e10;
+						q3=x[2]/1e10;
+						q4=x[3]/1e10;
+						q5=x[4]/1e10;
+						q6=x[5]/1e10;
+						var ax = R2(x, m, G);
+						for(var j=0;j<6;j++) 
+							{
+							x0[j]=x[j];
+							x[j] = 2*x0[j] - oldx[j] + dt * dt * ax[j];
+							oldx[j] = x0[j];
+							}
+						div1.style.left=q1+250+'px';
+						div1.style.top=q2+250+'px';
+						div2.style.left=q3+250+'px';
+						div2.style.top=q4+250+'px';
+						div3.style.left=q5+250+'px';
+						div3.style.top=q6+250+'px';
+						
+					//for(var j=0;j<6;j++) oldx[j] = x[j];
+					//if(is_on) 
+					if (is_on) setTimeout('verle()',1)
+						//}
+				}
+			function R(x, m, G){
+					var r12=Math.sqrt((x[2]-x[0])*(x[2]-x[0])+(x[3]-x[1])*(x[3]-x[1]));
+					var r13=Math.sqrt((x[2]-x[4])*(x[2]-x[4])+(x[3]-x[5])*(x[3]-x[5]));
+					var r23=Math.sqrt((x[4]-x[0])*(x[4]-x[0])+(x[5]-x[1])*(x[5]-x[1]));
+					var k1=(x[2]-x[0])/r12/r12/r12;
+					var k2=(x[4]-x[0])/r23/r23/r23;
+					var k3=(x[2]-x[4])/r13/r13/r13;
+					var n1=(x[5]-x[1])/r23/r23/r23;
+					var n2=(x[3]-x[1])/r12/r12/r12;
+					var n3=(x[5]-x[3])/r13/r13/r13;
+					return [
+						x[6], x[7], x[8], x[9], x[10], x[11], 
+						G*(m[1]*k1+m[2]*k2),
+						G*(m[2]*n1+m[1]*n2),
+						-G*(m[0]*k1+m[2]*k3),
+						G*(-m[0]*n2+m[2]*n3),
+						G*(m[1]*k3-m[0]*k2),
+						-G*(m[1]*n3+m[0]*n1),
+						]
+						}	
+			function R2(x, m, G){
+					var r12=Math.sqrt((x[2]-x[0])*(x[2]-x[0])+(x[3]-x[1])*(x[3]-x[1]));
+					var r13=Math.sqrt((x[2]-x[4])*(x[2]-x[4])+(x[3]-x[5])*(x[3]-x[5]));
+					var r23=Math.sqrt((x[4]-x[0])*(x[4]-x[0])+(x[5]-x[1])*(x[5]-x[1]));
+					var k1=(x[2]-x[0])/r12/r12/r12;
+					var k2=(x[4]-x[0])/r23/r23/r23;
+					var k3=(x[2]-x[4])/r13/r13/r13;
+					var n1=(x[5]-x[1])/r23/r23/r23;
+					var n2=(x[3]-x[1])/r12/r12/r12;
+					var n3=(x[5]-x[3])/r13/r13/r13;
+					return [G*(m[1]*k1+m[2]*k2),
+						G*(m[2]*n1+m[1]*n2),
+						-G*(m[0]*k1+m[2]*k3),
+						G*(-m[0]*n2+m[2]*n3),
+						G*(m[1]*k3-m[0]*k2),
+						-G*(m[1]*n3+m[0]*n1),
+						0, 0, 0, 0, 0, 0 
+						
+						];
+					}	
+		function q(obj){is_on = false
+					obj.num6.value=x[0]-2e12;
+					obj.num7.value=x[1]-1.5e12;
+					obj.num8.value=x[2]-2e12;
+					obj.num9.value=x[3]-1.5e12;
+					obj.num10.value=x[4]-2e12;
+					obj.num11.value=x[5]-1.5e12;
+					obj.num12.value=x[6];
+					obj.num13.value=x[7];
+					obj.num14.value=x[8];
+					obj.num15.value=x[9];
+					obj.num16.value=x[10];
+					obj.num17.value =x[11];
+					} 
+        function p(){is_on = true; verle()}    	
+		
+		</script>
+		<button onclick="p()" type="button">|></button>
+		<button onclick="q(forml)" type="button">||</button>
+	 </body>
+</html>
